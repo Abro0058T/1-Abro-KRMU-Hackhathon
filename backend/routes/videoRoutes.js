@@ -4,7 +4,7 @@ import multer from "multer";
 // controllers
 import {
   uploadVideo,
-  // deleteVideo,
+  deleteVideo,
   // editVideo,
   // donwloadVideo,
   //   deleteUser,
@@ -97,7 +97,8 @@ const upload = multer({ storage: storage });
 //   router.post("/",authenticate, authorizeAdmin, uploadVideo);
 router.post("/", upload.single("image"), uploadVideo);
 // router.delete("/:id", authenticate, authorizeAdmin, deleteVideo);
+router.delete("/:id", deleteVideo);
 // router.put("/:id", authenticate, editVideo);
-// router.get("/download/:id", authenticate, donwloadVideo);
+// router.get("/download/:id", donwloadVideo);
 
 export default router;

@@ -82,6 +82,18 @@ const downloadObject = async (key, body) => {
       Key: key,
     });
     const response = await s3Client.send(command);
+    console.log(response);
+
+    const uploadDir = "uploads/"; // Adjust path as needed
+    const filePath = uploadDir + downloadFilename;
+
+    // Create upload directory if it doesn't exist
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    fs.writeFileSync(filePath, response.Body);
+    console.log(`Object downloaded and saved to: ${filePath}`);
     return response.Body; // Return the downloaded data stream
   } catch (error) {
     console.error("Error downloading object:", error);

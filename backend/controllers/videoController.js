@@ -1,15 +1,16 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import Video from "../models/videoModel.js";
-import { downloadObject, uploadObject } from "../services/s3Service.js";
+import {
+  downloadObject,
+  uploadObject,
+  deleteFile,
+} from "../services/s3Service.js";
 import crypto from "crypto";
 
 const generateFileName = (bytes = 32) =>
   crypto.randomBytes(bytes).toString("hex");
 
 const uploadVideo = async (req, res) => {
-  //   console.log("req.body".req.body);
-  //   console.log("req.file", req.file);
-
   const file = req.file;
   const fileBuffer = req.file.buffer;
   const videoName = generateFileName();
@@ -17,4 +18,12 @@ const uploadVideo = async (req, res) => {
   await uploadObject(videoName, fileBuffer, file.mimetype);
 };
 
-export { uploadVideo };
+// const donwloadVideo = async ()
+
+const deleteVideo = async (req, res) => {
+  const id = +req.params.id;
+  // console.log(id)
+  await deleteFile(id);
+};
+
+export { uploadVideo, deleteVideo };
