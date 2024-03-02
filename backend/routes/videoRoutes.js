@@ -6,7 +6,8 @@ import {
   uploadVideo,
   deleteVideo,
   // editVideo,
-  // donwloadVideo,
+  downloadVideo,
+  fetchVideoUrls,
   //   deleteUser,
   //   updateUserRole,
 } from "../controllers/videoController.js";
@@ -97,8 +98,9 @@ const upload = multer({ storage: storage });
 //   router.post("/",authenticate, authorizeAdmin, uploadVideo);
 router.post("/", upload.single("image"), uploadVideo);
 // router.delete("/:id", authenticate, authorizeAdmin, deleteVideo);
-router.delete("/:id", deleteVideo);
+router.delete("/delete/:id", deleteVideo);
 // router.put("/:id", authenticate, editVideo);
-// router.get("/download/:id", donwloadVideo);
+router.get("/download/:id", downloadVideo);
+router.get("/urls", fetchVideoUrls);
 
 export default router;

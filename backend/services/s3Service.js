@@ -4,6 +4,7 @@ import {
   DeleteObjectCommand,
   GetObjectCommand,
 } from "@aws-sdk/client-s3";
+import multerS3 from "multer-s3";
 
 import dotenv from "dotenv";
 
@@ -73,32 +74,68 @@ const deleteFile = async (fileName) => {
 //   }
 // }
 
-const downloadObject = async (key, body) => {
+const fetchS3ObjectUrls = async () => {
   try {
-    const bucketName = bucketName;
+    const params = {
+      Bucket: bucketName, // Replace with your bucket name
+    };
 
+    const data = await s3Client.listObjectsV2(params).promise();
+
+    const urls = data.Contents.map((object) =>
+      s3Client.getSignedUrl("getObject", {
+        Bucket: params.Bucket,
+        Key: object.Key,
+      })
+    );
+
+    return urls;
+  } catch (error) {
+    console.error("Error fetching S3 object URLs:", error);
+    throw error; // Re-throw for route handler
+  }
+};
+
+// const downloadObject = async (key, body) => {
+//   try {
+//     const command = new GetObjectCommand({
+//       Bucket: bucketName,
+//       Key: key,
+//     });
+//     const response = await s3Client.send(command);
+//     // console.log(response);
+
+//     const uploadDir = "uploads/"; // Adjust path as needed
+//     const filePath = uploadDir + downloadFilename;
+
+//     // Create upload directory if it doesn't exist
+//     if (!fs.existsSync(uploadDir)) {
+//       fs.mkdirSync(uploadDir, { recursive: true });
+//     }
+
+//     fs.writeFileSync(filePath, response.Body);
+//     console.log(`Object downloaded and saved to: ${filePath}`);
+//     return response.Body; // Return the downloaded data stream
+//   } catch (error) {
+//     console.error("Error downloading object:", error);
+//     throw error; // Re-throw for potential handling in calling code
+//   }
+// };
+
+const downloadObject = async (key, res) => {
+  try {
+    // const filename = key.params.id
     const command = new GetObjectCommand({
       Bucket: bucketName,
       Key: key,
     });
-    const response = await s3Client.send(command);
-    console.log(response);
-
-    const uploadDir = "uploads/"; // Adjust path as needed
-    const filePath = uploadDir + downloadFilename;
-
-    // Create upload directory if it doesn't exist
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-
-    fs.writeFileSync(filePath, response.Body);
-    console.log(`Object downloaded and saved to: ${filePath}`);
-    return response.Body; // Return the downloaded data stream
+    const data = await s3Client.send(command); // Send the command to S3 and use data object
+    console.log(data);
+    return data;
   } catch (error) {
-    console.error("Error downloading object:", error);
-    throw error; // Re-throw for potential handling in calling code
+    console.error("Error downloading object", error);
+    res.status(500).json({ message: "Failed to download object" });
   }
 };
 
-export { uploadObject, deleteFile, downloadObject };
+export { uploadObject, deleteFile, downloadObject, fetchS3ObjectUrls };
