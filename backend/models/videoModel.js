@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
-// import User from "./userModel"
+import User from "./userModel.js";
 
 const videoSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: User,
       required: true,
     },
     url: { type: "string", required: true },
@@ -25,4 +25,6 @@ const videoSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default videoSchema;
+const Video = mongoose.model("Video", videoSchema);
+
+export default Video;

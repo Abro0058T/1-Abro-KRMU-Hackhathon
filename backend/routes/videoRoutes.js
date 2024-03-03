@@ -1,19 +1,27 @@
 import express from "express";
 import multer from "multer";
+import { roles } from "../config/roles.js";
 
 // controllers
 import {
   uploadVideo,
   deleteVideo,
-  // editVideo,
   downloadVideo,
   fetchVideoUrls,
+  getPreSignedUrl,
+  getFileNamesController,
+  editVideo,
   //   deleteUser,
   //   updateUserRole,
 } from "../controllers/videoController.js";
 
 // middlewares
-import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
+import {
+  authenticate,
+  authorizeAdmin,
+  userPermission,
+  checkRole,
+} from "../middlewares/authMiddleware.js";
 
 // import { authenticate, authRoles } from "../middlewares/authMiddleware.js";
 const router = express.Router();
@@ -102,5 +110,15 @@ router.delete("/delete/:id", deleteVideo);
 // router.put("/:id", authenticate, editVideo);
 router.get("/download/:id", downloadVideo);
 router.get("/urls", fetchVideoUrls);
+router.get("/url/:id", getPreSignedUrl);
+router.get("/list/", getFileNamesController);
+// router.get(
+//   "/download/:id",
+//   userPermission([roles.admin, roles.videoEditor]),
+//   downloadVideo
+// );
+
+// for editor, to edit the video
+router.put("/edit/:id", checkRole("videoEditor"), editVideo);
 
 export default router;

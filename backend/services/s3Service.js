@@ -3,7 +3,9 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
   GetObjectCommand,
+  ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import multerS3 from "multer-s3";
 
 import dotenv from "dotenv";
@@ -56,43 +58,74 @@ const deleteFile = async (fileName) => {
   }
 };
 
-// export async function getObjectSignedUrl(key) {
-//   const params = {
-//     Bucket: bucketName,
-//     Key: key,
-//   };
+// S3 Pre-signed URLs: Provide temporary access to an S3 object for someone who doesn't have an AWS account , here video-editor and content-writer
+const getObjectSignedUrl = async (key) => {
+  const params = {
+    Bucket: bucketName,
+    Key: key,
+  };
 
-//   const command = new GetObjectCommand(params);
-//   const seconds = 60;
+  const command = new GetObjectCommand(params);
+  const seconds = 60;
 
-//   try {
-//     const url = await getSignedUrl(s3Client, command, { expiresIn: seconds });
-//     return url;
-//   } catch (error) {
-//     console.error(`Error getting signed URL for ${key}:`, error);
-//     throw error; // Re-throw for potential handling in calling code
-//   }
-// }
-
-const fetchS3ObjectUrls = async () => {
   try {
-    const params = {
-      Bucket: bucketName, // Replace with your bucket name
-    };
+    const url = await getSignedUrl(s3Client, command, { expiresIn: seconds });
+    return url;
+  } catch (error) {
+    console.error(`Error getting signed URL for ${key}:`, error);
+    throw error; // Re-throw for potential handling in calling code
+  }
+};
 
+// const fetchS3ObjectUrls = async () => {
+//   try {
+//     const params = {
+//       Bucket: bucketName, // Replace with your bucket name
+//     };
+
+//     const data = await s3Client.listObjectsV2(params).promise();
+
+//     const urls = data.Contents.map((object) =>
+//       s3Client.getSignedUrl("getObject", {
+//         Bucket: params.Bucket,
+//         Key: object.Key,
+//       })
+//     );
+
+//     return urls;
+//   } catch (error) {
+//     console.error("Error fetching S3 object URLs:", error);
+//     throw error; // Re-throw for route handler
+//   }
+// };
+
+const fetchS3ObjectUrls = async (req, res) => {
+  try {
+    const params = { Bucket: bucketName }; // Replace with your bucket name
+    console.log(s3Client);
     const data = await s3Client.listObjectsV2(params).promise();
 
-    const urls = data.Contents.map((object) =>
-      s3Client.getSignedUrl("getObject", {
-        Bucket: params.Bucket,
-        Key: object.Key,
-      })
-    );
-
-    return urls;
+    res.status(200).json({ contents: data.Contents });
   } catch (error) {
-    console.error("Error fetching S3 object URLs:", error);
-    throw error; // Re-throw for route handler
+    console.error("Error accessing S3 bucket:", error);
+    res.status(500).json({ message: "Failed to retrieve bucket contents" });
+  }
+};
+
+// an alternate to fetchS3ObjectUrls
+const getFileNames = async () => {
+  const params = {
+    Bucket: bucketName,
+  };
+
+  const command = new ListObjectsV2Command(params);
+
+  try {
+    const data = await s3Client.send(command);
+    return data.Contents.map((obj) => obj.Key); // Extract filenames from contents
+  } catch (error) {
+    console.error("Error listing objects:", error);
+    throw error; // Re-throw for handling in the route handler
   }
 };
 
@@ -130,7 +163,7 @@ const downloadObject = async (key, res) => {
       Key: key,
     });
     const data = await s3Client.send(command); // Send the command to S3 and use data object
-    console.log(data);
+    // console.log(data,"Data");
     return data;
   } catch (error) {
     console.error("Error downloading object", error);
@@ -138,4 +171,44 @@ const downloadObject = async (key, res) => {
   }
 };
 
-export { uploadObject, deleteFile, downloadObject, fetchS3ObjectUrls };
+// for editor to upload the video
+const uploadEditedVideo = async (itemId, video) => {
+  const params = {
+    Bucket: bucketName,
+    Key: itemId, // Replace with S3 object key structure
+    Body: video, // Video data (stream, buffer, etc.)
+  };
+
+  try {
+    await s3Client.send(new PutObjectCommand(params));
+  } catch (error) {
+    console.error("Error uploading video:", error);
+    throw error; // Re-throw for handling in the controller
+  }
+};
+
+const getVideo = async (itemId) => {
+  const params = {
+    Bucket: bucketName,
+    Key: itemId, // Replace with S3 object key structure
+  };
+
+  try {
+    const response = await s3Client.send(new GetObjectCommand(params));
+    return response.Body;
+  } catch (error) {
+    console.error("Error getting video:", error);
+    throw error; // Re-throw for handling in the controller
+  }
+};
+
+export {
+  uploadObject,
+  deleteFile,
+  downloadObject,
+  fetchS3ObjectUrls,
+  getObjectSignedUrl,
+  getFileNames,
+  getVideo,
+  uploadEditedVideo,
+};
