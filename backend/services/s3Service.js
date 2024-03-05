@@ -5,6 +5,7 @@ import {
   GetObjectCommand,
   ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
+
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import multerS3 from "multer-s3";
 
@@ -35,8 +36,10 @@ const uploadObject = async (fileName, fileBuffer, mimetype) => {
       Key: fileName,
       ContentType: mimetype,
     });
-    await s3Client.send(command);
-    console.log("Object uploaded successfully");
+
+    // console.log("Blan Blank", command);
+    const data = await s3Client.send(command);
+    console.log("Object uploaded successfully", data.location);
   } catch (error) {
     console.error("Error uploading object:", error);
     throw error; // Re-throw for potential handling in calling code
@@ -77,51 +80,54 @@ const getObjectSignedUrl = async (key) => {
   }
 };
 
-// const fetchS3ObjectUrls = async () => {
-//   try {
-//     const params = {
-//       Bucket: bucketName, // Replace with your bucket name
-//     };
-
-//     const data = await s3Client.listObjectsV2(params).promise();
-
-//     const urls = data.Contents.map((object) =>
-//       s3Client.getSignedUrl("getObject", {
-//         Bucket: params.Bucket,
-//         Key: object.Key,
-//       })
-//     );
-
-//     return urls;
-//   } catch (error) {
-//     console.error("Error fetching S3 object URLs:", error);
-//     throw error; // Re-throw for route handler
-//   }
-// };
-
-const fetchS3ObjectUrls = async (req, res) => {
+const fetchS3ObjectUrls = async () => {
   try {
-    const params = { Bucket: bucketName }; // Replace with your bucket name
-    console.log(s3Client);
-    const data = await s3Client.listObjectsV2(params).promise();
+    const params = {
+      Bucket: bucketName, // Replace with your bucket name
+    };
 
-    res.status(200).json({ contents: data.Contents });
+    const data = new ListObjectsV2Command(params);
+    const ouptput = await s3Client.send(data);
+    console.log(ouptput, "darta");
+    const urls = data.Contents.map((object) =>
+      s3Client.getSignedUrl("getObject", {
+        Bucket: params.Bucket,
+        Key: object.Key,
+      })
+    );
+
+    return urls;
   } catch (error) {
-    console.error("Error accessing S3 bucket:", error);
-    res.status(500).json({ message: "Failed to retrieve bucket contents" });
+    console.error("Error fetching S3 object URLs:", error);
+    throw error; // Re-throw for route handler
   }
 };
+
+// const fetchS3ObjectUrls = async (req, res) => {
+//   try {
+//     const params = { Bucket: bucketName }; // Replace with your bucket name
+//     console.log(s3Client);
+//     const data = await s3Client.listObjectsV2(params).promise();
+
+//     res.status(200).json({ contents: data.Contents });
+//   } catch (error) {
+//     console.error("Error accessing S3 bucket:", error);
+//     res.status(500).json({ message: "Failed to retrieve bucket contents" });
+//   }
+// };
 
 // an alternate to fetchS3ObjectUrls
 const getFileNames = async () => {
   const params = {
     Bucket: bucketName,
   };
+  console.log(bucketName);
 
-  const command = new ListObjectsV2Command(params);
+  const command = new ListObjectsV2Command({ Bucket: bucketName });
 
   try {
     const data = await s3Client.send(command);
+    console.log(data[0]);
     return data.Contents.map((obj) => obj.Key); // Extract filenames from contents
   } catch (error) {
     console.error("Error listing objects:", error);
@@ -202,6 +208,18 @@ const getVideo = async (itemId) => {
   }
 };
 
+const preSignedUrl = async (key) => {
+  const command = new GetObjectCommand({
+    Bucket: bucketName,
+    Key: key,
+  });
+
+  const url = await getSignedUrl(S3Client, command);
+  console.log("S3Client:::: ", S3Client);
+  console.log("Url", url);
+  return url;
+};
+
 export {
   uploadObject,
   deleteFile,
@@ -211,4 +229,5 @@ export {
   getFileNames,
   getVideo,
   uploadEditedVideo,
+  preSignedUrl,
 };
