@@ -3,6 +3,7 @@
 // };
 
 // export default Home;
+
 import { SparklesCore } from "../component/utils/sparkles";
 // import { TextReveal } from "../component/utils/text-reveal";
 
