@@ -5,6 +5,12 @@ import {
   GetObjectCommand,
   ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
+import AWS from 'aws-sdk'
+import {config} from "dotenv"
+config();
+
+AWS.config.update({region:'ap-south-1'})
+
 
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import multerS3 from "multer-s3";
@@ -40,6 +46,20 @@ const uploadObject = async (fileName, fileBuffer, mimetype) => {
     // console.log("Blan Blank", command);
     const data = await s3Client.send(command);
     console.log("Object uploaded successfully", data.location);
+    const  transcoder=new AWS.ElasticTranscoder();
+    const job=await transcoder.createJob({
+      PipelineId:"1709630805149-y5cu37",
+            Input:{
+                Key:fileName,
+                Container:"mp4"
+            },
+            Output:{
+                Key:`output/${fileName}`,
+                PresetId:"1351620000000-000010",
+            }
+    }).promise();
+    console.log(job)
+    
   } catch (error) {
     console.error("Error uploading object:", error);
     throw error; // Re-throw for potential handling in calling code
