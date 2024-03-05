@@ -21,8 +21,9 @@ const uploadVideo = async (req, res) => {
   const file = req.file;
   const fileBuffer = req.file.buffer;
   const videoName = generateFileName();
-
+    
   await uploadObject(videoName, fileBuffer, file.mimetype);
+
 
   res.send("Successfully uploaded" + req.file.location + "location");
 };
