@@ -24,11 +24,11 @@ const Login = () => {
   const redirect = sp.get("redirect") || "/";
   // Retrieves the value of the 'redirect' parameter from the search query. If the parameter is not present, it defaults to '/' (the root path). This parameter is commonly used for redirecting users after certain actions, such as logging in or registering.
 
-  useEffect(() => {
-    if (userInfo) {
-      navigate(redirect);
-    }
-  }, [navigate, redirect, userInfo]);
+  //   useEffect(() => {
+  //     if (userInfo) {
+  //       navigate(redirect);
+  //     }
+  //   }, [navigate, redirect, userInfo]);
 
   const submitHandler = async (e) => {
     e.preventDefault();

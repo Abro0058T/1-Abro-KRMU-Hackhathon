@@ -23,11 +23,11 @@ const Register = () => {
   const sp = new URLSearchParams(search);
   const redirect = sp.get("redirect") || "/";
 
-  useEffect(() => {
-    if (userInfo) {
-      navigate(redirect);
-    }
-  }, [navigate, redirect, userInfo]);
+  //   useEffect(() => {
+  //     if (userInfo) {
+  //       navigate(redirect);
+  //     }
+  //   }, [navigate, redirect, userInfo]);
 
   // submitting the form
   const submitHandler = async (e) => {
