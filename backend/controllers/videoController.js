@@ -10,6 +10,7 @@ import {
   getFileNames,
   getVideo,
   uploadEditedVideo,
+  preSignedUrl,
 } from "../services/s3Service.js";
 import crypto from "crypto";
 
@@ -40,13 +41,14 @@ const downloadVideo = async (req, res) => {
   // console.log(data);
   res.set("Content-Type", "image/png/video/mp4"); // Example for video content
   res.set("Content-Disposition", "attachment; filename=myVideo.mp4"); // Example filename
-  console.log(data.Body.IncomingMessage, "datyta body");
+  console.log(data.Body, "datyta body");
   res.json(data.Body);
 };
 
 const fetchVideoUrls = async (req, res) => {
   try {
     const urls = await fetchS3ObjectUrls(); // Call controller function
+    console.log(urls);
     res
       .status(200)
       .json({ message: "Successfully fetched S3 object URLs", urls }); // JSON response with URLs
@@ -71,6 +73,7 @@ const getPreSignedUrl = async (req, res) => {
 const getFileNamesController = async (req, res) => {
   try {
     const filenames = await getFileNames();
+    console.log(filenames);
     res.json({ filenames });
   } catch (error) {
     console.error("Error fetching filenames:", error);
@@ -134,6 +137,17 @@ const editVideo = async (req, res) => {
   }
 };
 
+const preSignUrl = async (req, res) => {
+  try {
+    const url = await preSignedUrl(req.params);
+    console.log(url);
+    res.json({ url });
+  } catch (error) {
+    console.error("Error fetching url:", error);
+    res.status(500).json({ message: "Failed to fetch url" });
+  }
+};
+
 export {
   uploadVideo,
   deleteVideo,
@@ -142,4 +156,5 @@ export {
   getPreSignedUrl,
   getFileNamesController,
   editVideo,
+  preSignUrl,
 };

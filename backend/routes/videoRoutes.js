@@ -11,6 +11,7 @@ import {
   getPreSignedUrl,
   getFileNamesController,
   editVideo,
+  preSignUrl,
   //   deleteUser,
   //   updateUserRole,
 } from "../controllers/videoController.js";
@@ -119,6 +120,7 @@ router.get("/list/", getFileNamesController);
 // );
 
 // for editor, to edit the video
-router.put("/edit/:id", checkRole("videoEditor"), editVideo);
+router.put("/edit/:id", editVideo);
+router.get("/preUrl/:id", preSignUrl);
 
 export default router;

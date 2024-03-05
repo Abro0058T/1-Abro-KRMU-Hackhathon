@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import videoRoutes from "./routes/videoRoutes.js";
+import imageRoutes from "./routes/imageRoutes.js";
 // import uploadRoutes from "./routes/uploadRoutes.js";
 
 // configuration
@@ -27,6 +28,7 @@ const PORT = process.env.PORT || 3000;
 // Routes
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/video", videoRoutes);
+app.use("/api/v1/image", imageRoutes);
 // app.use("/api/v1/uploads", uploadRoutes);
 
 // const __dirname = path.resolve();

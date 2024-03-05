@@ -17,6 +17,9 @@ const videoSchema = new mongoose.Schema(
       // Video/reel specific
       type: "number",
     },
+    thumbnail: {
+      type: "string",
+    },
     size: {
       type: "number",
       minimum: 0,
