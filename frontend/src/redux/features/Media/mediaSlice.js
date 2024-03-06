@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  registerUserThunk,
-  loginUserThunk,
+  getMediaThunk,
+  ,
   getAllUsersThunk,
 } from "../../thunks/userThunk";
 // import { logoutUserThunk } from "../../thunks/logoutThunk";

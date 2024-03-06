@@ -20,6 +20,8 @@ const videoSlice = createSlice({
       state.filteredVideo = action.payload;
     },
   },
+
+  
 });
 
 export const { setFilteredVideo, setVideoFilter } = videoSlice.actions;

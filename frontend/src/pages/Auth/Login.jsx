@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import Loader from "../../component/Loader";
-import { setCredentials } from "../../redux/features/Auth/authSlice";
-import { useLoginMutation } from "../../redux/api/users";
+// import Loader from "../../component/Loader";
+// import { setCredentials } from "../../redux/features/Auth/authSlice";
+// import { useLoginMutation } from "../../redux/api/users";
 import { toast } from "react-toastify";
+import { selectAuth } from "../../redux/features/Auth/authSlice";
+import { loginUserThunk } from "../../redux/thunks/userThunk";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -14,9 +16,10 @@ const Login = () => {
   const navigate = useNavigate();
 
   // the following 5 lines of code is performed because if the user has already logged in, then we need not to take him to login page we can redirect him to whatever query he asked from search url that's why we check for auth state from redux
-  const [login, { isLoading }] = useLoginMutation();
+  // const [login, { isLoading }] = useLoginMutation();
   // Retrieve user information from the Redux store
-  const { userInfo } = useSelector((state) => state.auth);
+  const userAuth = useSelector(selectAuth);
+  console.log(userAuth);
   // Retrieves the search query parameters from the current URL location
   const { search } = useLocation();
   // Creates a new URLSearchParams object to parse the search query string
@@ -34,8 +37,9 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const res = await login({ email, password }).unwrap();
-      dispatch(setCredentials({ ...res }));
+      // const res = await login({ email, password }).unwrap();
+      // dispatch(setCredentials({ ...res }));
+      dispatch(loginUserThunk({ email, password }));
       navigate(redirect);
     } catch (err) {
       toast.error(err?.data?.message || err.error);
@@ -86,14 +90,14 @@ const Login = () => {
 
             <button
               // when loading is true (or when button is cliked) the button is disabled i.e, it can't be clicked
-              disabled={isLoading}
+              // disabled={isLoading}
               type="submit"
               className="bg-teal-500 text-white px-4 py-2 rounded cursor-pointer my-[1rem]"
             >
               {/* button will be displayed based on loading state */}
-              {isLoading ? "Signing In ..." : "Sign In"}
             </button>
-            {isLoading && <Loader />}
+            {/* {isLoading ? "Signing In ..." : "Sign In"}
+            {isLoading && <Loader />} */}
           </form>
 
           <div className="mt-4">

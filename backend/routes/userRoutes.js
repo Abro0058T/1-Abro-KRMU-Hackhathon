@@ -18,8 +18,8 @@ import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 // routes
-router.route("/").post(createUser);
-router.post("/auth/login", loginUser);
+router.route("/register").post(createUser);
+router.post("/login", loginUser);
 router.post("/auth/logout", logoutUser);
 router.get("/", authenticate, authorizeAdmin, getAllUsers);
 
