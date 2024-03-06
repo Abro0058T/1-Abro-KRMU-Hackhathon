@@ -8,22 +8,38 @@ const videoSchema = new mongoose.Schema(
       ref: User,
       required: true,
     },
-    url: { type: "string", required: true },
-    type: { type: "string", enum: ["image", "reel", "video"], required: true },
-    uploadedAt: { type: "date", default: Date.now },
-    title: { type: "string" },
-    description: { type: "string" },
-    length: {
+    url: { type: String, required: true },
+    type: { type: String, enum: ["image", "reel", "video"], required: true },
+    streamUrl:{
+      type:String,
+
+    },
+    tags:{
+      type:[
+        {type:String}
+      ]
+    },
+    videoKey:{
+      type:String
+    },
+    title: { type: String  },
+    description: { type: String },
+    duration: {
       // Video/reel specific
-      type: "number",
+      type: String ,
     },
     thumbnail: {
-      type: "string",
+      type: String,
     },
     size: {
-      type: "number",
+      type: Number,
       minimum: 0,
     },
+    status:{
+      type:String,
+      enum:["In Progress","Waiting to review","Approved"],
+      default:"In Progress"
+    }
   },
   { timestamps: true }
 );
