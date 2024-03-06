@@ -82,8 +82,9 @@ const uploadMediaThunk = createAsyncThunk("/", async (data) => {
   }
 });
 
-const uploadImageThunk = createAsyncThunk("/image", async (data) => {
+const uploadImageThunk = createAsyncThunk("/dashboard/upload", async (data) => {
   try {
+    console.log(data)
     const response = await axios.post(`${BASE_URL}/image`, data);
     console.log(response.data);
     return response.data;
