@@ -7,6 +7,7 @@ const createUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
 
   // Validate input data (optional but recommended)
+  console.log(email, username, password);
   if (!username || !email || !password) {
     return res
       .status(400)

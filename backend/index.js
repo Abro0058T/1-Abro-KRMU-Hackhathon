@@ -3,6 +3,7 @@ import path from "path";
 import dotenv from "dotenv";
 import express from "express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 // files
 import connectDB from "./config/db.js";
@@ -15,8 +16,18 @@ import imageRoutes from "./routes/imageRoutes.js";
 dotenv.config();
 connectDB();
 
+
+
 const app = express();
 
+
+// cors
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 // middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

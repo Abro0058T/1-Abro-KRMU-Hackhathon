@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import Loader from "../../component/Loader";
-import { setCredentials } from "../../redux/features/Auth/authSlice";
-import { useRegisterMutation } from "../../redux/api/users";
+// import Loader from "../../component/Loader";
+// import { setCredentials } from "../../redux/features/Auth/authSlice";
+// import { useRegisterMutation } from "../../redux/api/users";
 import { toast } from "react-toastify";
+import { registerUserThunk } from "../../redux/thunks/userThunk";
+import { selectAuth } from "../../redux/features/Auth/authSlice";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -15,10 +17,11 @@ const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [register, { isLoading }] = useRegisterMutation();
+  // const [register, { isLoading }] = useRegisterMutation();
 
-  const { userInfo } = useSelector((state) => state.auth);
+  const userAuth = useSelector(selectAuth);
 
+  console.log(userAuth)
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const redirect = sp.get("redirect") || "/";
@@ -39,8 +42,8 @@ const Register = () => {
       try {
         // using register(users.js resgitser mutation) from rtk query and username, email and password to backend as data
         //  setcredentials is used to set the localstorage (reducer)
-        const res = await register({ username, email, password }).unwrap();
-        dispatch(setCredentials({ ...res }));
+        // const res = await register({ username, email, password }).unwrap();
+        dispatch(registerUserThunk({ username, email, password }));
         navigate(redirect);
         toast.success("User successfully registered.");
       } catch (err) {
@@ -124,14 +127,13 @@ const Register = () => {
           </div>
 
           <button
-            disabled={isLoading}
+            // disabled={isLoading}
             type="submit"
             className="bg-teal-500 text-white px-4 py-2 rounded cursor-pointer my-[1rem]"
-          >
-            {isLoading ? "Registering..." : "Register"}
-          </button>
+          ></button>
+          {/* {isLoading ? "Registering..." : "Register"}
 
-          {isLoading && <Loader />}
+          {isLoading && <Loader />} */}
         </form>
 
         <div className="mt-4">

@@ -47,8 +47,8 @@ router.delete("/delete/:videoKey", deleteVideo);
 // router.put("/:id", authenticate, editVideo);
 router.get("/download/:id", downloadVideo);
 router.get("/allVideos",fetchAllVideos)
-router.get("/allReels",fetchAllImages)
-router.get("/allImages",fetchAllReel)
+router.get("/allImages",fetchAllImages)
+router.get("/allReels",fetchAllReel)
 router.get("/singleVideo/:id",getSingleVideo)
 
 router.get("/singleImage/:id",getSingleImage)
