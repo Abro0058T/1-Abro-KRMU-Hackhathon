@@ -1,3 +1,4 @@
+import { throws } from "assert";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import VideoEdit from "../models/videoEditModel.js";
 import Video from "../models/videoModel.js";
@@ -55,8 +56,8 @@ const uploadImage = async (req, res) => {
  
  
  
-  //  const uploadVideo=await uploadObject(videoName, fileBuffer, file.mimetype);
-  //  console.log(uploadVideo)
+   const uploadVideo=await uploadObject(videoName, fileBuffer, file.mimetype);
+   console.log(uploadVideo)
    const videoDetails={
      userId,
      url:`https://videoconverter-bucket-1.s3.ap-south-1.amazonaws.com/${videoName}`,
@@ -87,8 +88,8 @@ const uploadImage = async (req, res) => {
  
  
  
-  //  const uploadVideo=await uploadObject(videoName, fileBuffer, file.mimetype);
-  //  console.log(uploadVideo)
+   const uploadVideo=await uploadObject(videoName, fileBuffer, file.mimetype);
+   console.log(uploadVideo)
    const videoDetails={
      userId,
      url:`https://videoconverter-bucket-1.s3.ap-south-1.amazonaws.com/${videoName}`,
@@ -329,6 +330,17 @@ const getSingleReel=async(req,res)=>{
   }
 }
 
+const updateMedia =async(req,res)=>{
+  try{
+    const data=Object.fromEntries(Object.entries(req.body).filter(([key, value]) => value !== ""));
+    delete data["id"]
+    const updateDate = await Video.findByIdAndUpdate(req.body.id,data,{new:true});
+    res.status(200).send(updateDate)
+  }catch(error){
+    console.log(error)
+    throw new Error("Video not updated")
+  }
+}
 export {
   uploadVideo,
   uploadReel,
@@ -337,6 +349,7 @@ export {
   downloadVideo,
   // getPreSignedUrl,
   // getFileNamesController,
+  updateMedia,
   getSingleVideo,
   getSingleImage,getSingleReel,
   editVideo,
