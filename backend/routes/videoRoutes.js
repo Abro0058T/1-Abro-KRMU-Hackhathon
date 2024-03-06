@@ -20,6 +20,7 @@ import {
   getSingleReel,
   uploadImage,
   uploadReel,
+  updateMedia,
   //   updateUserRole,
 } from "../controllers/videoController.js";
 
@@ -53,6 +54,8 @@ router.get("/singleVideo/:id",getSingleVideo)
 router.get("/singleImage/:id",getSingleImage)
 
 router.get("/singleReel/:id",getSingleReel)
+
+router.put("/updateVideo",updateMedia)
 
 // router.get("/url/:id", getPreSignedUrl);
 // router.get("/list/", getFileNamesController);
