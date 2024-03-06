@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getAllImageThunk,
   getAllMediaThunk,
@@ -10,18 +10,20 @@ import {
 } from "../redux/thunks/mediaThunk";
 
 import UploadFile from "./UploadFile";
-
 function HomeDashboard() {
   const dispatch = useDispatch();
+const {mediaInfo}=useSelector(state=>state.media)
+console.log(mediaInfo)
   useEffect(() => {
-    // dispatch(getAllMediaThunk())
+    dispatch(getAllMediaThunk())
     // dispatch(getAllImageThunk());
     // dispatch(getAllReelThunk());
     // dispatch(getSingleMediaThunk("65e81388b91158bf8b7108fb"));
-    dispatch(getSingleImageThunk("65e8140e565acd0c5fa6e6e5"));
+    // dispatch(getSingleImageThunk("65e8140e565acd0c5fa6e6e5"));
   }, [dispatch]);
   return (
     <div className="  mt-4 ml-6 w-full flex">
+      {/* <UploadFile/> */}
       <div className=" w-9/12 p-3">
         <div className="flex flex-row">
           <div className="navbar bg-base-100 flex justify-between rounded-lg background-color:#272636">
@@ -86,73 +88,24 @@ function HomeDashboard() {
               </div>
             </div>
           </div>
-          <UploadFile/>
           <button className="btn background-color:#272636 h-auto w-30 ml-2">
             Upload Video
           </button>
         </div>
         <h4 className="text-white text-xl p-2">Pending Videos</h4>
         {/* crousal */}
-        <div className="carousel w-full mt-2 h-60 border-none rounded-md">
-          <div id="slide1" className="carousel-item relative w-full">
-            <img
-              src="https://daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.jpg"
-              className="w-full"
-            />
-            <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-              <a href="#slide4" className="btn btn-circle">
-                ❮
-              </a>
-              <a href="#slide2" className="btn btn-circle">
-                ❯
-              </a>
-            </div>
-          </div>
-          <div id="slide2" className="carousel-item relative w-full">
-            <img
-              src="https://daisyui.com/images/stock/photo-1609621838510-5ad474b7d25d.jpg"
-              className="w-full"
-            />
-            <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-              <a href="#slide1" className="btn btn-circle">
-                ❮
-              </a>
-              <a href="#slide3" className="btn btn-circle">
-                ❯
-              </a>
-            </div>
-          </div>
-          <div id="slide3" className="carousel-item relative w-full">
-            <img
-              src="https://daisyui.com/images/stock/photo-1414694762283-acccc27bca85.jpg"
-              className="w-full"
-            />
-            <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-              <a href="#slide2" className="btn btn-circle">
-                ❮
-              </a>
-              <a href="#slide4" className="btn btn-circle">
-                ❯
-              </a>
-            </div>
-          </div>
-          <div id="slide4" className="carousel-item relative w-full">
-            <img
-              src="https://daisyui.com/images/stock/photo-1665553365602-b2fb8e5d1707.jpg"
-              className="w-full"
-            />
-            <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-              <a href="#slide3" className="btn btn-circle">
-                ❮
-              </a>
-              <a href="#slide1" className="btn btn-circle">
-                ❯
-              </a>
-            </div>
-          </div>
-        </div>
+       
         {/* crousal */}
+        <div className="carousel carousel-center w-100 h-60 p-4 space-x-4  rounded-box">
+          {
+            mediaInfo.length>0 && mediaInfo.map((media)=>(
+  <div className="carousel-item w-100 " key={media.id}>
+    <video src={media.videos.streamUrl} className="rounded-box" autoPlay={true}/>
+  </div> 
+            ))
+          }
 
+</div>
         {/* table */}
 
         <div className="overflow-y-scroll h-60 bg-purple-800 rounded-md mt-10">
@@ -163,53 +116,26 @@ function HomeDashboard() {
                 <th>Video</th>
                 <th>Name</th>
                 <th>Duration</th>
-                <th>Data</th>
+                <th>type</th>
                 <th>Status</th>
+                <th></th>
               </tr>
             </thead>
             <tbody className="">
               {/* row 1 */}
-              <tr>
-                <th>1</th>
-                <td>Cy Ganderton</td>
-                <td>Quality Control Specialist</td>
-                <td>Blue</td>
+              {mediaInfo.length>0 && mediaInfo.map((media)=>(
+
+              <tr key={media.id}>
+                <th>
+                  <video src={media.videos.streamUrl} autoPlay={false} width="400px" height="200"></video>
+                </th>
+                <td>{media.videos.title}</td>
+                <td>{media.videos.duration}</td>
+                <td>{media.videos.type}</td>
+                <td>{media.videos.status}</td>
               </tr>
-              {/* row 2 */}
-              <tr>
-                <th>2</th>
-                <td>Hart Hagerty</td>
-                <td>Desktop Support Technician</td>
-                <td>Purple</td>
-              </tr>
-              {/* row 3 */}
-              <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-                <td>Red</td>
-              </tr>
-              {/* row 1 */}
-              <tr>
-                <th>1</th>
-                <td>Cy Ganderton</td>
-                <td>Quality Control Specialist</td>
-                <td>Blue</td>
-              </tr>
-              {/* row 2 */}
-              <tr>
-                <th>2</th>
-                <td>Hart Hagerty</td>
-                <td>Desktop Support Technician</td>
-                <td>Purple</td>
-              </tr>
-              {/* row 3 */}
-              <tr>
-                <th>3</th>
-                <td>Brice Swyre</td>
-                <td>Tax Accountant</td>
-                <td>Red</td>
-              </tr>
+              ))}
+
             </tbody>
           </table>
         </div>

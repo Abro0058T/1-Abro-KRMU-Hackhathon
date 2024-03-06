@@ -1,6 +1,11 @@
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { uploadMediaThunk } from "../redux/thunks/mediaThunk";
+import { useSelector } from "react-redux";
+import {
+  uploadMediaThunk,
+  uploadImageThunk,
+  uploadReelThunk,
+} from "../redux/thunks/mediaThunk";
 
 const UploadFile = () => {
   const { register, handleSubmit } = useForm();
@@ -11,7 +16,10 @@ const UploadFile = () => {
     const formData = new FormData();
     formData.append("image", data.file[0]);
 
-    await dispatch(uploadMediaThunk(formData));
+    //  dispatch(uploadMediaThunk(formData));
+    //  dispatch(uploadImageThunk(formData));
+    dispatch(uploadReelThunk(formData));
+    console.log(formData);
 
     const res = await fetch("http://localhost:3000/video/upload", {
       method: "POST",

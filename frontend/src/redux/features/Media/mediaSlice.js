@@ -6,7 +6,9 @@ import {
   getSingleMediaThunk,
   getSingleReelThunk,
   getSingleImageThunk,
-  uploadMediaThunk
+  uploadMediaThunk,
+  uploadImageThunk,
+  uploadReelThunk,
 } from "../../thunks/mediaThunk";
 // import { logoutUserThunk } from "../../thunks/logoutThunk";
 
@@ -103,8 +105,8 @@ const mediaSlice = createSlice({
         state.error = action.error.message;
       })
 
-    //   Upload Media - {Video, Image, Reel}
-    .addCase(uploadMediaThunk.pending, (state) => {
+      //   Upload Video
+      .addCase(uploadMediaThunk.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(uploadMediaThunk.fulfilled, (state, action) => {
@@ -112,6 +114,32 @@ const mediaSlice = createSlice({
         state.mediaInfo = action.payload;
       })
       .addCase(uploadMediaThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+
+      //   Upload Image
+      .addCase(uploadImageThunk.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(uploadImageThunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.mediaInfo = action.payload;
+      })
+      .addCase(uploadImageThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+
+      // Upload Reel
+      .addCase(uploadReelThunk.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(uploadReelThunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.mediaInfo = action.payload;
+      })
+      .addCase(uploadReelThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });

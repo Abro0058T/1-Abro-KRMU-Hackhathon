@@ -77,7 +77,29 @@ const uploadMediaThunk = createAsyncThunk("/", async (data) => {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    console.error("Error in uploading media", error);
+    console.error("Error in uploading video", error);
+    throw error;
+  }
+});
+
+const uploadImageThunk = createAsyncThunk("/image", async (data) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/image`, data);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error in uploading image", error);
+    throw error;
+  }
+});
+
+const uploadReelThunk = createAsyncThunk("/reels", async (data) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/reels`, data);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error in uploading reel", error);
     throw error;
   }
 });
@@ -90,4 +112,6 @@ export {
   getSingleImageThunk,
   getSingleReelThunk,
   uploadMediaThunk,
+  uploadImageThunk,
+  uploadReelThunk,
 };

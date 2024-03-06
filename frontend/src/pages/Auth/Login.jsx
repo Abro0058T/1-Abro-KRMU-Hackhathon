@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import Loader from "../../component/Loader";
@@ -18,8 +18,8 @@ const Login = () => {
   // the following 5 lines of code is performed because if the user has already logged in, then we need not to take him to login page we can redirect him to whatever query he asked from search url that's why we check for auth state from redux
   // const [login, { isLoading }] = useLoginMutation();
   // Retrieve user information from the Redux store
-  const userAuth = useSelector(selectAuth);
-  console.log(userAuth);
+  const {isAuth} = useSelector(state=>state.user);
+  // console.log(user);
   // Retrieves the search query parameters from the current URL location
   const { search } = useLocation();
   // Creates a new URLSearchParams object to parse the search query string
@@ -27,11 +27,11 @@ const Login = () => {
   const redirect = sp.get("redirect") || "/";
   // Retrieves the value of the 'redirect' parameter from the search query. If the parameter is not present, it defaults to '/' (the root path). This parameter is commonly used for redirecting users after certain actions, such as logging in or registering.
 
-  //   useEffect(() => {
-  //     if (userInfo) {
-  //       navigate(redirect);
-  //     }
-  //   }, [navigate, redirect, userInfo]);
+    useEffect(() => {
+      if (isAuth) {
+        navigate("/dashboard");
+      }
+    }, [navigate,isAuth]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -39,13 +39,18 @@ const Login = () => {
     try {
       // const res = await login({ email, password }).unwrap();
       // dispatch(setCredentials({ ...res }));
-      dispatch(loginUserThunk({ email, password }));
-      navigate(redirect);
+      await dispatch(loginUserThunk({ email, password }));
+      navigate('/dashboard');
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
   };
 
+//   useEffect(() => {
+//     if(isAuth)
+// {
+//   navigate("/dashboard")
+// }  },[navigate,isAuth])      
   return (
     <div className="dark:bg-neutral-800">
       <section className="pl-[10rem] flex flex-wrap">
