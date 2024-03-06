@@ -1,24 +1,21 @@
-// import { Outlet } from "react-router-dom";
-// import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-// import Navigation from "./pages/Auth/Navigation";
-import Home from "./pages/Home.jsx";
+import Layout from "./pages/Layout";
+import Home from "./pages/Home";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
+import About from "./pages/About";
 
-const App = () => {
+export default function App() {
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="" element={<Home />} />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
           <Route path="register" element={<Register />} />
           <Route path="login" element={<Login />} />
-        </Routes>
-      </BrowserRouter>
-    </>
+          <Route path="about" element={<About />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
-};
-
-export default App;
+}
