@@ -9,7 +9,7 @@ import {
   getFileNames,
   getVideo,
   uploadEditedVideo,
-  getObjectAttributes,
+  // getObjectAttributes,
 } from "../services/s3Service.js";
 import crypto from "crypto";
 
@@ -18,18 +18,18 @@ const generateFileName = (bytes = 32) =>
 
 const uploadVideo = async (req, res) => {
  try{ const file = req.file;
-  const {userId,type,title,description,tags}=req.body;
+  const {userId,title,description,tags}=req.body;
   const fileBuffer = req.file.buffer;
   const videoName = generateFileName();
 
+console.log(videoName)
 
-
-  const uploadVideo=await uploadObject(videoName, fileBuffer, file.mimetype);
-  console.log(uploadVideo)
+  // const uploadVideo=await uploadObject(videoName, fileBuffer, file.mimetype);
+  // console.log(uploadVideo)
   const videoDetails={
     userId,
     url:`https://videoconverter-bucket-1.s3.ap-south-1.amazonaws.com/${videoName}`,
-  type,
+  type:"video",
   streamUrl:`https://d17flk31bq57al.cloudfront.net/${videoName}`,
   tags,
   videoKey:videoName,
@@ -47,6 +47,68 @@ size:"",
   }
 };
 
+const uploadImage = async (req, res) => {
+  try{ const file = req.file;
+   const {userId,title,description,tags}=req.body;
+   const fileBuffer = req.file.buffer;
+   const videoName = generateFileName();
+ 
+ 
+ 
+  //  const uploadVideo=await uploadObject(videoName, fileBuffer, file.mimetype);
+  //  console.log(uploadVideo)
+   const videoDetails={
+     userId,
+     url:`https://videoconverter-bucket-1.s3.ap-south-1.amazonaws.com/${videoName}`,
+   type:"image",
+   streamUrl:`https://d17flk31bq57al.cloudfront.net/${videoName}`,
+   tags,
+   videoKey:videoName,
+ title,
+ description,
+ duration:"",
+ size:"",
+   }
+   const uploadMedia= await  Video.create(videoDetails);
+   console.log(uploadMedia);
+   res.send("Successfully uploaded" + req.file.location + "location");}
+   catch(error){
+     console.log(error)
+     throw new Error("Fail to upload media ")
+   }
+ };
+
+
+ const uploadReel = async (req, res) => {
+  try{ const file = req.file;
+   const {userId,title,description,tags}=req.body;
+   const fileBuffer = req.file.buffer;
+   const videoName = generateFileName();
+ 
+ 
+ 
+  //  const uploadVideo=await uploadObject(videoName, fileBuffer, file.mimetype);
+  //  console.log(uploadVideo)
+   const videoDetails={
+     userId,
+     url:`https://videoconverter-bucket-1.s3.ap-south-1.amazonaws.com/${videoName}`,
+   type:"reel",
+  //  streamUrl:`https://d17flk31bq57al.cloudfront.net/${videoName}`,
+   tags,
+   videoKey:videoName,
+ title,
+ description,
+ duration:"",
+ size:"",
+   }
+   const uploadMedia= await  Video.create(videoDetails);
+   console.log(uploadMedia);
+   res.send("Successfully uploaded" + req.file.location + "location");}
+   catch(error){
+     console.log(error)
+     throw new Error("Fail to upload media ")
+   }
+ };
 // const donwloadVideo = async ()
 
 const deleteVideo = async (req, res) => {
@@ -269,6 +331,8 @@ const getSingleReel=async(req,res)=>{
 
 export {
   uploadVideo,
+  uploadReel,
+  uploadImage,
   deleteVideo,
   downloadVideo,
   // getPreSignedUrl,

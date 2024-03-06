@@ -18,6 +18,8 @@ import {
   getSingleVideo,
   getSingleImage,
   getSingleReel,
+  uploadImage,
+  uploadReel,
   //   updateUserRole,
 } from "../controllers/videoController.js";
 
@@ -36,6 +38,9 @@ const upload = multer({ storage: storage });
 // routes
 //   router.post("/",authenticate, authorizeAdmin, uploadVideo);
 router.post("/", upload.single("image"), uploadVideo);
+router.post("/image",upload.single("image"),uploadImage);
+router.post("/reels",upload.single("image"),uploadReel);
+
 // router.delete("/:id", authenticate, authorizeAdmin, deleteVideo);
 router.delete("/delete/:videoKey", deleteVideo);
 // router.put("/:id", authenticate, editVideo);
