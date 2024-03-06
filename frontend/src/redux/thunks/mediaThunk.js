@@ -71,6 +71,17 @@ const getSingleReelThunk = createAsyncThunk("/singleReel", async (id) => {
   }
 });
 
+const uploadMediaThunk = createAsyncThunk("/", async (data) => {
+  try {
+    const response = await axios.post(`${BASE_URL}`, data);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error in uploading media", error);
+    throw error;
+  }
+});
+
 export {
   getAllMediaThunk,
   getAllImageThunk,
@@ -78,4 +89,5 @@ export {
   getSingleMediaThunk,
   getSingleImageThunk,
   getSingleReelThunk,
+  uploadMediaThunk,
 };

@@ -6,6 +6,7 @@ import {
   getSingleMediaThunk,
   getSingleReelThunk,
   getSingleImageThunk,
+  uploadMediaThunk
 } from "../../thunks/mediaThunk";
 // import { logoutUserThunk } from "../../thunks/logoutThunk";
 
@@ -98,6 +99,19 @@ const mediaSlice = createSlice({
         state.mediaInfo = action.payload;
       })
       .addCase(getSingleReelThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+
+    //   Upload Media - {Video, Image, Reel}
+    .addCase(uploadMediaThunk.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(uploadMediaThunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.mediaInfo = action.payload;
+      })
+      .addCase(uploadMediaThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });

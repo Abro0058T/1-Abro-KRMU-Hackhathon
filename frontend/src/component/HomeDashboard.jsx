@@ -9,6 +9,8 @@ import {
   getSingleReelThunk,
 } from "../redux/thunks/mediaThunk";
 
+import UploadFile from "./UploadFile";
+
 function HomeDashboard() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -84,6 +86,7 @@ function HomeDashboard() {
               </div>
             </div>
           </div>
+          <UploadFile/>
           <button className="btn background-color:#272636 h-auto w-30 ml-2">
             Upload Video
           </button>
