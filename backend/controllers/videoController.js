@@ -17,21 +17,51 @@ const generateFileName = (bytes = 32) =>
   crypto.randomBytes(bytes).toString("hex");
 
 const uploadVideo = async (req, res) => {
-  const file = req.file;
+ try{ const file = req.file;
+  const {userId,type,title,description,tags}=req.body;
   const fileBuffer = req.file.buffer;
   const videoName = generateFileName();
 
-  await uploadObject(videoName, fileBuffer, file.mimetype);
 
-  res.send("Successfully uploaded" + req.file.location + "location");
+
+  const uploadVideo=await uploadObject(videoName, fileBuffer, file.mimetype);
+  console.log(uploadVideo)
+  const videoDetails={
+    userId,
+    url:`https://videoconverter-bucket-1.s3.ap-south-1.amazonaws.com/${videoName}`,
+  type,
+  streamUrl:`https://d17flk31bq57al.cloudfront.net/${videoName}`,
+  tags,
+  videoKey:videoName,
+title,
+description,
+duration:"",
+size:"",
+  }
+  const uploadMedia= await  Video.create(videoDetails);
+  console.log(uploadMedia);
+  res.send("Successfully uploaded" + req.file.location + "location");}
+  catch(error){
+    console.log(error)
+    throw new Error("Fail to upload media ")
+  }
 };
 
 // const donwloadVideo = async ()
 
 const deleteVideo = async (req, res) => {
-  const { id } = req.params;
+try{  const { videoKey } = req.params;
+const {videoId}=req.body;
   // console.log(id)
-  await deleteFile(id);
+  await deleteFile(videoKey);
+  const deleteMedia= await Video.findByIdAndDelete(videoId);  
+  console.log(deleteMedia)
+  res.status(200).send("video deleted success fully")
+}
+  catch(error){
+    console.log(error)
+    throw new Error("Video deletoin fail")
+  }
 };
 
 const downloadVideo = async (req, res) => {
@@ -44,28 +74,100 @@ const downloadVideo = async (req, res) => {
   res.json(data.Body);
 };
 
-const getPreSignedUrl = async (req, res) => {
-  try {
-    const urls = await getObjectSignedUrl(req); // Call controller function
-    res
-      .status(200)
-      .json({ message: "Successfully fetched S3 object URLs", urls }); // JSON response with URLs
-  } catch (error) {
-    console.error("Error in route handler:", error);
-    res.status(500).json({ message: "Failed to fetch S3 object URLs" });
-  }
-};
 
-const getFileNamesController = async (req, res) => {
-  try {
-    const filenames = await getFileNames();
-    console.log(filenames);
-    res.json({ filenames });
-  } catch (error) {
-    console.error("Error fetching filenames:", error);
-    res.status(500).json({ message: "Failed to fetch filenames" });
+const  fetchAllVideos=async(req,res)=>{
+  try{
+    
+    const pipeline = [
+      {$match:{type:"video"}},
+      {
+        $group: {
+          _id: "$status",
+          videos: { $push: "$$ROOT" },
+        },
+      },
+      { $sort: { _id: 1 } }, // Sort groups by status
+      { $unwind: "$videos" }, // Unwind grouped documents
+      { $sort: { "videos.createdAt": -1 } }, // Sort videos within each group by creation date (descending)
+    ];
+const allvideos= await Video.aggregate(pipeline)
+console.log(allvideos)
+res.send(allvideos)
+  }catch(error){
+console.log(error)
+throw new Error(error,"error")
   }
-};
+}
+
+const  fetchAllImages=async(req,res)=>{
+  try{
+    
+    const pipeline = [
+      {$match:{type:"image"}},
+      {
+        $group: {
+          _id: "$status",
+          videos: { $push: "$$ROOT" },
+        },
+      },
+      { $sort: { _id: 1 } }, // Sort groups by status
+      { $unwind: "$videos" }, // Unwind grouped documents
+      { $sort: { "videos.createdAt": -1 } }, // Sort videos within each group by creation date (descending)
+    ];
+const allvideos= await Video.aggregate(pipeline)
+console.log(allvideos)
+res.send(allvideos)
+  }catch(error){
+console.log(error)
+throw new Error(error,"error")
+  }
+}
+
+const  fetchAllReel=async(req,res)=>{
+  try{
+    
+    const pipeline = [
+      {$match:{type:"reel"}},
+      {
+        $group: {
+          _id: "$status",
+          videos: { $push: "$$ROOT" },
+        },
+      },
+      { $sort: { _id: 1 } }, // Sort groups by status
+      { $unwind: "$videos" }, // Unwind grouped documents
+      { $sort: { "videos.createdAt": -1 } }, // Sort videos within each group by creation date (descending)
+    ];
+const allvideos= await Video.aggregate(pipeline)
+console.log(allvideos)
+res.send(allvideos)
+  }catch(error){
+console.log(error)
+throw new Error(error,"error")
+  }
+}
+// const getPreSignedUrl = async (req, res) => {
+//   try {
+//     const urls = await getObjectSignedUrl(req); // Call controller function
+//     res
+//       .status(200)
+//       .json({ message: "Successfully fetched S3 object URLs", urls }); // JSON response with URLs
+//   } catch (error) {
+//     console.error("Error in route handler:", error);
+//     res.status(500).json({ message: "Failed to fetch S3 object URLs" });
+//   }
+// };
+
+// const getFileNamesController = async (req, res) => {
+//   try {
+//     const filenames = await getFileNames();
+//     console.log(filenames);
+//     res.json({ filenames });
+//   } catch (error) {
+//     console.error("Error fetching filenames:", error);
+//     res.status(500).json({ message: "Failed to fetch filenames" });
+//   }
+// };
 
 const editVideo = async (req, res) => {
   try {
@@ -134,12 +236,47 @@ const getAttributes = async (req, res) => {
   }
 };
 
+const getSingleVideo=async(req,res)=>{
+  try{
+    const {id}=req.params;
+    const video= await Video.findById(id);
+    console.log(video)
+    res.status(200).send(video)
+  }catch(error){
+
+  }
+}
+const getSingleImage=async(req,res)=>{
+  try{
+    const {id}=req.params;
+    const video= await Video.findById(id);
+    console.log(video)
+    res.status(200).send(video)
+  }catch(error){
+
+  }
+}
+const getSingleReel=async(req,res)=>{
+  try{
+    const {id}=req.params;
+    const video= await Video.findById(id);
+    console.log(video)
+    res.status(200).send(video)
+  }catch(error){
+
+  }
+}
+
 export {
   uploadVideo,
   deleteVideo,
   downloadVideo,
-  getPreSignedUrl,
-  getFileNamesController,
+  // getPreSignedUrl,
+  // getFileNamesController,
+  getSingleVideo,
+  getSingleImage,getSingleReel,
   editVideo,
+  fetchAllImages,fetchAllReel,
+  fetchAllVideos,
   getAttributes,
 };
