@@ -29,11 +29,35 @@ const UploadFile = () => {
   };
 
   return (
-    <div className="App">
+    <div className="App ml-5 ">
+      <h1 className="text-lg font-medium text-sky-500 mt-5 ml-5">Upload</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <input type="file" {...register("file")} />
+        <h2 className="m-2 text-orange-700 text-xl">Title: </h2>
+        <textarea
+          className="textarea textarea-error textarea-bordered textarea-md w-full text-lg text-yellow-500"
+          placeholder="Title"
+        ></textarea>
 
-        <input type="submit" />
+        <h2 className="m-2 text-orange-700 text-xl">Tags: </h2>
+        <textarea
+          className="textarea textarea-error textarea-bordered textarea-md w-full text-lg text-yellow-500"
+          placeholder="Tags"
+        ></textarea>
+
+        <h2 className="m-2 text-orange-700 text-xl">Description: </h2>
+        <textarea
+          className="textarea textarea-error textarea-lg textarea-bordered textarea-md w-full text-lg text-yellow-500"
+          placeholder="Description w-full text-lg text-yellow-500"
+        ></textarea>
+
+        <input
+          type="file"
+          {...register("file")}
+          className="file-input mt-10 file-input-bordered file-input-error w-full"
+        />
+        <button type="submit" className="btn btn-outline btn-error mt-5">
+          Submit
+        </button>
       </form>
     </div>
   );
