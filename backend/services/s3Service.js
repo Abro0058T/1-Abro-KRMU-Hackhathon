@@ -167,36 +167,36 @@ const getVideo = async (itemId) => {
   }
 };
 
-const getObjectAttributes = async (key) => {
-  const params = new GetObjectCommand({
-    Bucket: bucketName,
-    Key: key,
-  });
+// const getObjectAttributes = async (key) => {
+//   const params = new GetObjectCommand({
+//     Bucket: bucketName,
+//     Key: key,
+//   });
 
-  try {
-    const data = s3.getObject(params);
-    console.log("Object properties:", data.toString("utf-8")[0][0]);
-    return data.toString("utf-8");
-    if (data) {
-      const fileType = data.ContentType;
-      const fileSize = data.ContentLength;
-      const fileName = data.Key;
+//   try {
+//     const data = s3.getObject(params);
+//     console.log("Object properties:", data.toString("utf-8")[0][0]);
+//     return data.toString("utf-8");
+//     if (data) {
+//       const fileType = data.ContentType;
+//       const fileSize = data.ContentLength;
+//       const fileName = data.Key;
 
-      // Display extracted information
-      console.log(`File properties:`);
-      console.log(`  - File type: ${fileType}`);
-      console.log(`  - File size: ${fileSize} bytes`);
-      console.log(`  - File name: ${fileName}`);
-      // console.log("Object key:", objectKey);
-    } else {
-      console.log("No data available");
-    }
+//       // Display extracted information
+//       console.log(`File properties:`);
+//       console.log(`  - File type: ${fileType}`);
+//       console.log(`  - File size: ${fileSize} bytes`);
+//       console.log(`  - File name: ${fileName}`);
+//       // console.log("Object key:", objectKey);
+//     } else {
+//       console.log("No data available");
+//     }
 
-    return data;
-  } catch (error) {
-    console.error("Error retrieving object properties:", error);
-  }
-};
+//     return data;
+//   } catch (error) {
+//     console.error("Error retrieving object properties:", error);
+//   }
+// };
 
 export {
   uploadObject,
@@ -206,5 +206,5 @@ export {
   getFileNames,
   getVideo,
   uploadEditedVideo,
-  getObjectAttributes,
+  // getObjectAttributes,
 };
