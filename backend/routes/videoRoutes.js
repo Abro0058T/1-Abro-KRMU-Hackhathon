@@ -7,11 +7,10 @@ import {
   uploadVideo,
   deleteVideo,
   downloadVideo,
-  fetchVideoUrls,
   getPreSignedUrl,
   getFileNamesController,
   editVideo,
-  preSignUrl,
+  getAttributes,
   //   deleteUser,
   //   updateUserRole,
 } from "../controllers/videoController.js";
@@ -110,7 +109,6 @@ router.post("/", upload.single("image"), uploadVideo);
 router.delete("/delete/:id", deleteVideo);
 // router.put("/:id", authenticate, editVideo);
 router.get("/download/:id", downloadVideo);
-router.get("/urls", fetchVideoUrls);
 router.get("/url/:id", getPreSignedUrl);
 router.get("/list/", getFileNamesController);
 // router.get(
@@ -121,6 +119,6 @@ router.get("/list/", getFileNamesController);
 
 // for editor, to edit the video
 router.put("/edit/:id", editVideo);
-router.get("/preUrl/:id", preSignUrl);
+router.get("/attributes/:id", getAttributes);
 
 export default router;

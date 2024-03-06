@@ -1,0 +1,27 @@
+import { createSlice } from "@reduxjs/toolkit";
+
+const videoSlice = createSlice({
+  name: "videos",
+  initialState: {
+    videoFilter: {
+      searchType: "",
+      selectedSort: [],
+    },
+
+    filteredVideo: [],
+  },
+
+  reducers: {
+    setVideoFilter: (state, action) => {
+      state.videoFilter = { ...state.videoFilter, ...action.payload };
+    },
+
+    setFilteredVideo: (state, action) => {
+      state.filteredVideo = action.payload;
+    },
+  },
+});
+
+export const { setFilteredVideo, setVideoFilter } = videoSlice.actions;
+
+export default videoSlice.reducer;

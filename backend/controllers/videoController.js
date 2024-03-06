@@ -5,12 +5,11 @@ import {
   downloadObject,
   uploadObject,
   deleteFile,
-  fetchS3ObjectUrls,
   getObjectSignedUrl,
   getFileNames,
   getVideo,
   uploadEditedVideo,
-  preSignedUrl,
+  getObjectAttributes,
 } from "../services/s3Service.js";
 import crypto from "crypto";
 
@@ -21,9 +20,8 @@ const uploadVideo = async (req, res) => {
   const file = req.file;
   const fileBuffer = req.file.buffer;
   const videoName = generateFileName();
-    
-  await uploadObject(videoName, fileBuffer, file.mimetype);
 
+  await uploadObject(videoName, fileBuffer, file.mimetype);
 
   res.send("Successfully uploaded" + req.file.location + "location");
 };
@@ -44,19 +42,6 @@ const downloadVideo = async (req, res) => {
   res.set("Content-Disposition", "attachment; filename=myVideo.mp4"); // Example filename
   console.log(data.Body, "datyta body");
   res.json(data.Body);
-};
-
-const fetchVideoUrls = async (req, res) => {
-  try {
-    const urls = await fetchS3ObjectUrls(); // Call controller function
-    console.log(urls);
-    res
-      .status(200)
-      .json({ message: "Successfully fetched S3 object URLs", urls }); // JSON response with URLs
-  } catch (error) {
-    console.error("Error in route handler:", error);
-    res.status(500).json({ message: "Failed to fetch S3 object URLs" });
-  }
 };
 
 const getPreSignedUrl = async (req, res) => {
@@ -138,11 +123,11 @@ const editVideo = async (req, res) => {
   }
 };
 
-const preSignUrl = async (req, res) => {
+const getAttributes = async (req, res) => {
   try {
-    const url = await preSignedUrl(req.params);
-    console.log(url);
-    res.json({ url });
+    const data = await getObjectAttributes(req.params);
+    console.log(data);
+    res.json({ data });
   } catch (error) {
     console.error("Error fetching url:", error);
     res.status(500).json({ message: "Failed to fetch url" });
@@ -153,9 +138,8 @@ export {
   uploadVideo,
   deleteVideo,
   downloadVideo,
-  fetchVideoUrls,
   getPreSignedUrl,
   getFileNamesController,
   editVideo,
-  preSignUrl,
+  getAttributes,
 };
