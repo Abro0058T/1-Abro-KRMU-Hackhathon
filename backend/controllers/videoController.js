@@ -77,7 +77,6 @@ const downloadVideo = async (req, res) => {
 
 const  fetchAllVideos=async(req,res)=>{
   try{
-    
     const pipeline = [
       {$match:{type:"video"}},
       {
@@ -136,7 +135,7 @@ const  fetchAllReel=async(req,res)=>{
       },
       { $sort: { _id: 1 } }, // Sort groups by status
       { $unwind: "$videos" }, // Unwind grouped documents
-      { $sort: { "videos.createdAt": -1 } }, // Sort videos within each group by creation date (descending)
+      // { $sort: { "videos.createdAt": -1 } }, // Sort videos within each group by creation date (descending)
     ];
 const allvideos= await Video.aggregate(pipeline)
 console.log(allvideos)

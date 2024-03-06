@@ -1,6 +1,6 @@
 import React from 'react'
-import Video from './Video'
-// import HomeDashboard from './HomeDashboard'
+// import Video from './Video'
+import HomeDashboard from './HomeDashboard'
 // import Upload from './Upload'
 
 function Dashboard() {
@@ -23,9 +23,9 @@ function Dashboard() {
             <div className="pl-4 pt-4 text-white">Logout</div>
             </div>
         </div>
-        {/* <HomeDashboard/> */}
+        <HomeDashboard/>
         {/* <Upload/> */}
-        <Video/>
+        {/* <Video/> */}
     </div>
   )
 }

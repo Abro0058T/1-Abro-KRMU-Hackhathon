@@ -1,22 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  getMediaThunk,
-  ,
-  getAllUsersThunk,
-} from "../../thunks/userThunk";
+  getAllImageThunk,
+  getAllMediaThunk,
+  getAllReelThunk,
+  getSingleMediaThunk,
+  getSingleReelThunk,
+  getSingleImageThunk,
+} from "../../thunks/mediaThunk";
 // import { logoutUserThunk } from "../../thunks/logoutThunk";
 
 const initialState = {
-  userInfo: localStorage.getItem("userInfo")
-    ? JSON.parse(localStorage.getItem("userInfo"))
-    : null,
-  isAuth: false,
+  mediaInfo: {},
   isLoading: false,
   error: null,
 };
 
-const authSlice = createSlice({
-  name: "auth",
+const mediaSlice = createSlice({
+  name: "media",
   initialState,
   reducers: {
     resetAppError: (state) => {
@@ -25,65 +25,85 @@ const authSlice = createSlice({
   },
 
   extraReducers: (builder) => {
-    // builder
-    //   .addCase(fetchUserDataThunk.pending, (state) => {
-    //     state.isLoading = true;
-    //   })
-    //   .addCase(fetchUserDataThunk.fulfilled, (state, action) => {
-    //     state.isLoading = false;
-    //     state.data = action.payload;
-    //   })
-    //   .addCase(fetchUserDataThunk.rejected, (state, action) => {
-    //     state.isLoading = false;
-    //     state.error = action.error.message;
-    //   })
-    //   .addCase(logoutUserThunk.fulfilled, (state) => {
-    //     state.userInfo = null;
-    //     localStorage.clear();
-    //     state.isAuth = false; // Update auth state
-    //   }),
-
     builder
-      .addCase(registerUserThunk.pending, (state) => {
+      // Videos
+      .addCase(getAllMediaThunk.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(registerUserThunk.fulfilled, (state, action) => {
+      .addCase(getAllMediaThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload;
-        state.isAuth = true;
+        state.mediaInfo = action.payload;
       })
-      .addCase(registerUserThunk.rejected, (state, action) => {
+      .addCase(getAllMediaThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       })
-      .addCase(loginUserThunk.fulfilled, (state) => {
-        state.isAuth = true;
-        state.isLoading = false;
-      })
-      .addCase(loginUserThunk.pending, (state) => {
+      //   Images
+      .addCase(getAllImageThunk.pending, (state) => {
         state.isLoading = true;
-        state.isAuth = false;
       })
-      .addCase(loginUserThunk.rejected, (state, action) => {
+      .addCase(getAllImageThunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.mediaInfo = action.payload;
+      })
+      .addCase(getAllImageThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       })
-      .addCase(getAllUsersThunk.pending, (state) => {
+      //   Reels
+      .addCase(getAllReelThunk.pending, (state) => {
         state.isLoading = true;
-        state.isAuth = true;
-        state.data = null;
       })
-      .addCase(getAllUsersThunk.fulfilled, (state, action) => {
+      .addCase(getAllReelThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload;
+        state.mediaInfo = action.payload;
       })
-      .addCase(getAllUsersThunk.rejected, (state, action) => {
+      .addCase(getAllReelThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+
+      //   Single Video
+      .addCase(getSingleMediaThunk.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getSingleMediaThunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.mediaInfo = action.payload;
+      })
+      .addCase(getSingleMediaThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+
+      // single Image
+      .addCase(getSingleImageThunk.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getSingleImageThunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.mediaInfo = action.payload;
+      })
+      .addCase(getSingleImageThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+
+      // single Reel
+      .addCase(getSingleReelThunk.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getSingleReelThunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.mediaInfo = action.payload;
+      })
+      .addCase(getSingleReelThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       });
   },
 });
 
-export const { resetAppError } = authSlice.actions;
+export const { resetAppError } = mediaSlice.actions;
 export const selectAuth = (state) => state.auth;
-export default authSlice.reducer;
+export default mediaSlice.reducer;

@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./features/Auth/authSlice.js"
+import authReducer from "./features/Auth/authSlice.js";
+import mediaReducer from "./features/Media/mediaSlice.js";
 import storage from "redux-persist/lib/storage";
 import {
   persistReducer,
@@ -31,24 +32,20 @@ const persistedUserReducer = persistReducer(authPersistConfig, authReducer);
 //   storage,
 // };
 
-
 // const persistedVendorReducer = persistReducer(
 //   vendorPersistConfig,
 //   vendorReducer
 // );
-
 
 // const agentPersistConfig = {
 //   key: "agent",
 //   storage,
 // };
 
-
 // const persistedAgentReducer = persistReducer(
 //   agentPersistConfig,
 //   agentReducer
 // );
-
 
 // const productPersistConfig = {
 //   key: "product",
@@ -63,6 +60,7 @@ const persistedUserReducer = persistReducer(authPersistConfig, authReducer);
 export const store = configureStore({
   reducer: {
     user: persistedUserReducer,
+    media: mediaReducer,
     // admin: persistedAdminReducer,
     // vendor: persistedVendorReducer,
     // agent: persistedAgentReducer,
