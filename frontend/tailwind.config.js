@@ -20,19 +20,27 @@ module.exports = {
     },
     extend: {
       colors: {
-        
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+        customPurple: {
+          DEFAULT: "#6663f8",
+          darker: "#201F3F",
         },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+        customBlack:{
+             DEFAULT:"#212120"
+        },
+        customGreen: {
+          DEFAULT: "#41B878",
+        },
+        customRed: {
+          DEFAULT: "#B45752",
+        },
+        customGray: {
+          DEFAULT: "#AEADB1",
+          light: "#F0F1F1",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -41,10 +49,6 @@ module.exports = {
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -76,5 +80,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"),require("daisyui")],
+  plugins: [require("tailwindcss-animate"), require("daisyui")],
 }

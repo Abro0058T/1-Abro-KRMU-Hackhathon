@@ -30,12 +30,13 @@ function Upload() {
           type="text"
           id="title"
           {...register('title')}
+          
         />
         {errors.title && <p className="error">{errors.title.message}</p>}
       </div>
       <div>
         <label htmlFor="description">Description:</label>
-        <textarea id="description" {...register('description')} />
+        <textarea  id="description" {...register('description')} />
       </div>
       <div>
         <label htmlFor="tags">Tags (comma-separated):</label>
@@ -57,7 +58,7 @@ function Upload() {
         <label htmlFor="file">File:</label>
         <input type="file" id="file" onChange={(e) => setSelectedFile(e.target.files[0])} />
       </div>
-      <button type="submit">Upload</button>
+      <button className='bg-black text-customGray-light' type="submit">Upload</button>
     </form>
     // <div className=' ml-6 mt-6 w-full'>
     //     <h1 className='text-2xl text-white text-700'>Upload</h1>
