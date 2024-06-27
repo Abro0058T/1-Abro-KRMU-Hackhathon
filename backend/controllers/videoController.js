@@ -25,13 +25,14 @@ const uploadVideo = async (req, res) => {
 
 console.log(videoName)
 
-  // const uploadVideo=await uploadObject(videoName, fileBuffer, file.mimetype);
-  // console.log(uploadVideo)
+  const uploadVideo=await uploadObject(videoName, fileBuffer, file.mimetype);
+  console.log(uploadVideo)
   const videoDetails={
     userId,
-    url:`https://videoconverter-bucket-1.s3.ap-south-1.amazonaws.com/${videoName}`,
+    
+    url:`https://cloudcontentsource.s3.ap-south-1.amazonaws.com/${videoName}`,
   type:"video",
-  streamUrl:`https://d17flk31bq57al.cloudfront.net/${videoName}`,
+  streamUrl:`https://cloudcontenttranscoded.s3.ap-south-1.amazonaws.com/output/${videoName}`,
   tags,
   videoKey:videoName,
 title,

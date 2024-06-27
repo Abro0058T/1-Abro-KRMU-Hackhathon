@@ -45,22 +45,23 @@ const uploadObject = async (fileName, fileBuffer, mimetype) => {
 
     // console.log("Blan Blank", command);
     const data = await s3Client.send(command);
-    console.log("Object uploaded successfully", data.location);
-    // const transcoder = new AWS.ElasticTranscoder();
-    // const job = await transcoder
-    //   .createJob({
-    //     PipelineId: "1709630805149-y5cu37",
-    //     Input: {
-    //       Key: fileName,
-    //       Container: "mp4",
-    //     },
-    //     Output: {
-    //       Key: `output/${fileName}`,
-    //       PresetId: "1351620000000-000010",
-    //     },
-    //   })
-    //   .promise();
-    // console.log(job);
+    console.log("Object uploaded successfully", data);
+    const transcoder = new AWS.ElasticTranscoder();
+    const job = await transcoder
+      .createJob({
+        PipelineId: "1719494195718-tq2ms8",
+        Input: {
+          Key: fileName,
+          Container: "mp4",
+        },
+        Output: {
+          Key: `output/${fileName}`,
+          PresetId: "1351620000000-000010",
+        },
+      })
+      .promise();
+    console.log(job);
+    return job
   } catch (error) {
     console.error("Error uploading object:", error);
     throw error; // Re-throw for potential handling in calling code
