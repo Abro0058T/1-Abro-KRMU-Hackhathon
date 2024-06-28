@@ -7,6 +7,7 @@ import {
 } from "@aws-sdk/client-s3";
 import AWS from "aws-sdk";
 import { config } from "dotenv";
+import { readFile, readFileSync } from "fs";
 config();
 
 AWS.config.update({ region: "ap-south-1" });
@@ -14,6 +15,8 @@ AWS.config.update({ region: "ap-south-1" });
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import dotenv from "dotenv";
+import { exit } from "process";
+import { unlink } from "fs";
 
 dotenv.config();
 
@@ -68,17 +71,19 @@ const uploadObject = async (fileName, fileBuffer, mimetype) => {
   }
 };
 
-const deleteFile = async (fileName) => {
+const deleteAssests = async (imageKeys,userId,type) => {
   try {
+    const imageKey=imageKeys[imageKeys.length-1]
+    console.log(imageKey)
     const deleteParams = {
       Bucket: bucketName,
-      Key: fileName,
+      Key: `user/${userId}/${type}/${imageKey}`,
     };
-
+    console.log(deleteParams)
     await s3Client.send(new DeleteObjectCommand(deleteParams));
-    console.log(`File ${fileName} deleted successfully.`); // Added success message
+    console.log(`File  deleted successfully.`); // Added success message
   } catch (error) {
-    console.error(`Error deleting file ${fileName}:`, error);
+    console.error(`Error deleting file :`, error);
     throw error; // Re-throw for potential handling in calling code
   }
 };
@@ -199,13 +204,65 @@ const getVideo = async (itemId) => {
 //   }
 // };
 
+
+const uploadImageToS3=async (fileName,fileBuffer,mimeType,userid,type)=>{
+  try{
+    const fileContent=readFileSync(fileBuffer)//fileBuffer is file path
+    const command=new PutObjectCommand({
+      Bucket:bucketName,
+      Key:`user/${userid}/${type}/${fileName}`,
+      Body:fileContent,
+      // ContentType:mimeType
+    })
+    await s3Client.send(command)
+    await unlink(fileBuffer,()=>{
+      console.log("file deleted")
+    });
+    return `https://cloudcontentsource.s3.ap-south-1.amazonaws.com/user/${userid}/${type}/${fileName}`
+  }
+  catch(error){
+    console.log(error)
+    throw new Error("eror uploading image ot s3")
+  }
+}
+
+const uploadVideoToS3 = async (fileName, fileBuffer, mimetype,userid,type) => {
+  try {
+    // console.log(process.env.AWS_ACCESS_KEY);
+    const fileContent=readFileSync(fileBuffer)//fileBuffer is file path
+    console.log(fileBuffer
+    )
+    const command = new PutObjectCommand({
+      Bucket: bucketName,
+      Body: fileContent,
+      Key:`user/${userid}/${type}/${fileName}`,
+      ContentType: mimetype,
+    });
+
+    // console.log("Blan Blank", command);
+    const data = await s3Client.send(command);
+    console.log("Object uploaded successfully", data);
+    
+  await unlink(fileBuffer,()=>{
+    console.log("file deleted")
+  });
+    return `https://cloudcontentsource.s3.ap-south-1.amazonaws.com/user/${userid}/${type}/${fileName}`
+
+  } catch (error) {
+    console.error("Error uploading object:", error);
+    throw error; // Re-throw for potential handling in calling code
+  }
+};
+
 export {
   uploadObject,
-  deleteFile,
+  deleteAssests,
   downloadObject,
   getObjectSignedUrl,
   getFileNames,
   getVideo,
   uploadEditedVideo,
+  uploadImageToS3,
+  uploadVideoToS3
   // getObjectAttributes,
 };

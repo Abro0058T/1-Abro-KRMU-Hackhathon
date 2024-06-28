@@ -5,21 +5,59 @@ import Video from "../models/videoModel.js";
 import {
   downloadObject,
   uploadObject,
-  deleteFile,
+  deleteAssests,
   getObjectSignedUrl,
   getFileNames,
   getVideo,
   uploadEditedVideo,
+  uploadImageToS3,
+  uploadVideoToS3,
+  
   // getObjectAttributes,
 } from "../services/s3Service.js";
 import crypto from "crypto";
+import { exit } from "process";
 
 const generateFileName = (bytes = 32) =>
   crypto.randomBytes(bytes).toString("hex");
 
+const createNewProject=async(req,res)=>{
+  try{
+    const {userId,title,description,tags}=req.body;//userId is admin id 
+    const videoDetails={
+      userId,
+      type:"video",
+      tags,
+    title,
+    description,
+    duration:"",
+    size:"",
+    }
+    const uploadMedia= await  Video.create(videoDetails);
+    console.log(uploadMedia);
+    res.send("Successfully created new project");
+  }catch(error){
+    console.log(error)
+    throw new Error("Fail to create new project")
+  }
+
+}
+
+const getProjectDetail=async(req,res)=>{
+  try{
+    const {id}=req.params;
+    const project= await Video.findById(id);
+    console.log(project)
+    res.status(200).send(project)
+  }catch(error){
+    throw new Error("Error getting the video")
+  }
+}
+
 const uploadVideo = async (req, res) => {
  try{ const file = req.file;
-  const {userId,title,description,tags}=req.body;
+  console.log(req.file)
+  const {userId,title,description,tags,projectId}=req.body;
   const fileBuffer = req.file.buffer;
   const videoName = generateFileName();
 
@@ -28,7 +66,7 @@ console.log(videoName)
   const uploadVideo=await uploadObject(videoName, fileBuffer, file.mimetype);
   console.log(uploadVideo)
   const videoDetails={
-    userId,
+    // userId,
     
     url:`https://cloudcontentsource.s3.ap-south-1.amazonaws.com/${videoName}`,
   type:"video",
@@ -40,7 +78,7 @@ description,
 duration:"",
 size:"",
   }
-  const uploadMedia= await  Video.create(videoDetails);
+  const uploadMedia=await Video.findByIdAndUpdate(projectId,videoDetails)
   console.log(uploadMedia);
   res.send("Successfully uploaded" + req.file.location + "location");}
   catch(error){
@@ -50,30 +88,112 @@ size:"",
 };
 
 const uploadImage = async (req, res) => {
-  try{ const file = req.file;
-   const {userId,title,description,tags}=req.body;
-   const fileBuffer = req.file.buffer;
-   const videoName = generateFileName();
- 
- 
- 
-   const uploadVideo=await uploadObject(videoName, fileBuffer, file.mimetype);
-   console.log(uploadVideo)
-   const videoDetails={
-     userId,
-     url:`https://videoconverter-bucket-1.s3.ap-south-1.amazonaws.com/${videoName}`,
-   type:"image",
-   streamUrl:`https://d17flk31bq57al.cloudfront.net/${videoName}`,
-   tags,
-   videoKey:videoName,
- title,
- description,
- duration:"",
- size:"",
+  try{ 
+    // const {userId}=req.body;
+    // console.log()
+    const imageFiles=req.files;
+    console.log(imageFiles)
+    // exit()
+    const imageUrls= await Promise.all(
+     imageFiles.map(async (file)=>{
+        return uploadImageToS3(file.filename,file.path,file.mimetype,req.body.userId,"image");
+      })
+    )
+    console.log(imageUrls,"imageUrls")
+    const updateProject=await Video.findByIdAndUpdate(req.body.projectId,{
+      $push:{"images":imageUrls}
+    },{
+      new:true
+    })
+    console.log(updateProject)
+    res.status(200).json({
+      code:200,projectDetails:updateProject
+    })
+    // exit()
+  }
+   catch(error){
+     console.log(error)
+     throw new Error("Fail to upload media ")
    }
-   const uploadMedia= await  Video.create(videoDetails);
-   console.log(uploadMedia);
-   res.send("Successfully uploaded" + req.file.location + "location");}
+ };
+
+const deleteImageAssest=async(req,res)=>{
+  try{
+    const {imageUrl,userId,type,projectId}=req.body;
+    const imageKeys=imageUrl.split("/")
+    
+    await deleteAssests(imageKeys,userId,type)
+    const removeImage=await Video.findByIdAndUpdate(projectId,{
+      $pull:{"images":imageUrl}
+    },{
+      new:true
+    
+    })
+    console.log(removeImage,"imageREmoved")
+    res.status(200).json({code:200,message:"image Deleted successfully"})
+  }catch(error){
+    console.log(error)
+    throw new Error("Fail to delete image")
+  }
+}
+
+
+ const uploadVideoAssests = async (req, res) => {
+  try{ 
+    // const {userId}=req.body;
+    // console.log()
+    const imageFiles=req.files;
+    console.log(imageFiles)
+    // exit()
+    const imageUrls= await Promise.all(
+     imageFiles.map(async (file)=>{
+      console.log(file)
+        return uploadVideoToS3(file.filename,file.path,file.mimetype,req.body.userId,"video");
+      })
+    )
+    console.log(imageUrls,"imageUrls")
+    const updateProject=await Video.findByIdAndUpdate(req.body.projectId,{
+      $push:{"clips":imageUrls}
+    },{
+      new:true
+    })
+    console.log(updateProject)
+    
+    res.status(200).json({
+      code:200,projectDetails:updateProject
+    })
+  }
+   catch(error){
+     console.log(error)
+     throw new Error("Fail to upload media ")
+   }
+ };
+
+ 
+ const uploadAudioAssests = async (req, res) => {
+  try{ 
+    // const {userId}=req.body;
+    // console.log()
+    const imageFiles=req.files;
+    console.log(imageFiles)
+    // exit()
+    const imageUrls= await Promise.all(
+     imageFiles.map(async (file)=>{
+        return uploadImageToS3(file.filename,file.path,file.mimetype,req.body.userId,"audio");
+      })
+    )
+    console.log(imageUrls,"imageUrls")
+    const updateProject=await Video.findByIdAndUpdate(req.body.projectId,{
+      $push:{"audio":imageUrls}
+    },{
+      new:true
+    })
+    console.log(updateProject)
+    
+    res.status(200).json({
+      code:200,projectDetails:updateProject
+    })
+  }
    catch(error){
      console.log(error)
      throw new Error("Fail to upload media ")
@@ -141,19 +261,8 @@ const downloadVideo = async (req, res) => {
 
 const  fetchAllVideos=async(req,res)=>{
   try{
-    const pipeline = [
-      {$match:{type:"video"}},
-      {
-        $group: {
-          _id: "$status",
-          videos: { $push: "$$ROOT" },
-        },
-      },
-      { $sort: { _id: 1 } }, // Sort groups by status
-      { $unwind: "$videos" }, // Unwind grouped documents
-      { $sort: { "videos.createdAt": -1 } }, // Sort videos within each group by creation date (descending)
-    ];
-const allvideos= await Video.aggregate(pipeline)
+   
+const allvideos= await Video.find({userId:req.body.userId}).sort({createdAt:1})
 console.log(allvideos)
 res.send(allvideos)
   }catch(error){
@@ -341,7 +450,23 @@ const updateMedia =async(req,res)=>{
     throw new Error("Video not updated")
   }
 }
+
+
+const getAllProject=async(req,res)=>{
+  try{
+    const {user}=req.body
+    const allProjects=await Video.find({userId:user})
+    res.status(200).send(allProjects)
+  }catch(error){
+    console.log(error)
+    throw new Error("Fail to fetch all projects")
+  }
+
+}
+
 export {
+  createNewProject,
+  getProjectDetail,
   uploadVideo,
   uploadReel,
   uploadImage,
@@ -356,4 +481,9 @@ export {
   fetchAllImages,fetchAllReel,
   fetchAllVideos,
   getAttributes,
+  getAllProject,
+  uploadVideoAssests,
+  uploadAudioAssests,
+  deleteImageAssest
+  // addAssests,
 };

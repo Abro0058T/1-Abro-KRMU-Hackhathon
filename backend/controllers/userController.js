@@ -2,6 +2,7 @@ import asyncHandler from "../middlewares/asyncHandler.js";
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import createToken from "../utils/createToken.js";
+import TeamMember from "../models/teamMember.js";
 
 const createUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
@@ -21,13 +22,13 @@ const createUser = asyncHandler(async (req, res) => {
   }
 
   // Hash password securely before saving
-  const hashedPassword = await bcrypt.hash(password, 10); // Increase salt rounds for better security
+  // const hashedPassword = await bcrypt.hash(password, 10); // Increase salt rounds for better security
 
   // Create a new user with the provided or default role
   const newUser = new User({
     username,
     email,
-    password: hashedPassword,
+    password: password,
     role: req.body.role || "videoEditor", // Use default role if not provided
   });
 
@@ -44,33 +45,21 @@ const createUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-
-  const existingUser = await User.findOne({ email });
-
-  console.log(existingUser);
-  if (existingUser) {
-    const isPasswordValid = await bcrypt.compare(
-      password,
-      existingUser.password
-    );
-
-    // if password is correct we create a new jwt token and pass a confirmation status message
-    if (isPasswordValid) {
-      createToken(res, existingUser._id);
-
-      res.status(201).json({
-        _id: existingUser._id,
-        username: existingUser.username,
-        email: existingUser.email,
-        role: existingUser.role,
-      });
+console.log(req.body)
+  const existingUser = await User.find({email});
+  console.log(existingUser)
+  if(!existingUser.length){
+    
+    throw new Error("User not found")
+  }
+  // console.log(existingUser);
+  if(!(await existingUser[0].isPasswordMatch(password))){
+    throw new Error("Incorrect password")
     } else {
       // incorrect password
-      res.status(401).json({ message: "Invalid Password" });
+      res.status(200).json({ message: "login user" });
     }
-  } else {
-    res.status(401).json({ message: "User not found" });
-  }
+
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
@@ -86,4 +75,25 @@ const getAllUsers = asyncHandler(async (req, res) => {
   res.json(users);
 });
 
-export { createUser, loginUser, logoutUser, getAllUsers };
+const addMembers=asyncHandler(async(req,res)=>{
+  const {email,role,password,username,adminId}=req.body
+  const existingUser = await TeamMember.create({email,role,password,username,adminId})
+  console.log(existingUser);
+  if(existingUser){
+    res.status(201).json({message:"Member added successfully",user:existingUser})
+  }
+  else{
+    res.status(401).json({message:"Member not added"})
+  }
+})
+
+const getAllMembers =asyncHandler(async(req,res)=>{
+  try{const {adminId}=req.body
+  const members=await TeamMember.find({adminId})
+  res.status(200).json(members)
+  }catch(error){
+    console.log(error);
+  throw new Error("Error fetching member of team")
+  }
+})
+export { createUser, loginUser, logoutUser, getAllUsers ,addMembers,getAllMembers};

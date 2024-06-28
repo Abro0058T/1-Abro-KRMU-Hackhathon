@@ -1,11 +1,15 @@
 import mongoose from "mongoose";
-import bcrypt from"bcryptjs"
-const userSchema = new mongoose.Schema(
+import bcrypt from "bcryptjs"
+const teamMemberSchema = new mongoose.Schema(
   {
     username: {
       type: String,
       required: true,
       unique: true,
+    },
+    adminId:{
+        type:mongoose.Schema.Types.ObjectId,
+        required:true,
     },
     email: {
       type: String,
@@ -24,12 +28,21 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      default: "admin",
-    },
+      enum: [ "contentWriter", "videoEditor"],
+      default: "videoEditor",
+    },remark:{
+        type:String,
+        default:""
+    }
   },
   { timestamps: true ,
+  
     methods: {
-
+      /**
+       * Check if password matches the user's password
+       * @param {string} password
+       * @returns {Promise<boolean>}
+       */
       isPasswordMatch: async function (password) {
         const user = this;
         return bcrypt.compare(password, user.password);
@@ -37,7 +50,7 @@ const userSchema = new mongoose.Schema(
     },}
 ); // Include timestamps by default
 
-userSchema.pre("save",async function(next){
+teamMemberSchema.pre("save",async function(next){
   const user=this;
   if(this.isModified("password")){
     user.password=await bcrypt.hash(user.password,10);
@@ -46,6 +59,6 @@ userSchema.pre("save",async function(next){
 })
 
 
-const User = mongoose.model("User", userSchema);
+const TeamMember = mongoose.model("TeamMember", teamMemberSchema);
 
-export default User;
+export default TeamMember;

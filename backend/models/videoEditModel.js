@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import User from "./userModel.js";
 
 const VideoEditSchema = new mongoose.Schema({
-  userId: {
+  adminId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: User,
     required: true,

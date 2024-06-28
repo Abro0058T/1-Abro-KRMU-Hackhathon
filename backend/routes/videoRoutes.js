@@ -21,6 +21,10 @@ import {
   uploadImage,
   uploadReel,
   updateMedia,
+  createNewProject,
+  uploadVideoAssests,
+  uploadAudioAssests,
+  deleteImageAssest,
   //   updateUserRole,
 } from "../controllers/videoController.js";
 
@@ -32,24 +36,29 @@ import {
   checkRole,
 } from "../middlewares/authMiddleware.js";
 
+import { upload } from "../middlewares/multer.js";
 // import { authenticate, authRoles } from "../middlewares/authMiddleware.js";
 const router = express.Router();
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload1 = multer({ storage: storage });
 // routes
 //   router.post("/",authenticate, authorizeAdmin, uploadVideo);
-router.post("/", upload.single("image"), uploadVideo);
-router.post("/image",upload.single("image"),uploadImage);
-router.post("/reels",upload.single("image"),uploadReel);
+router.post("/initializeNewProject",createNewProject)//working 
+// .get("/getProject",getProjectDetail)
+router.post("/addVideo", upload1.single("video"), uploadVideo);//working
+router.post("/AddImageAssests",upload.array("image",10),uploadImage).delete("/deleteImageAssests",deleteImageAssest);//upload and delete  image working
+router.post("/AddVideoAssests",upload.array("video",10),uploadVideoAssests);//working 
+router.post("/AddAudioAssests",upload.array("audio",10),uploadAudioAssests);//working 
 
 // router.delete("/:id", authenticate, authorizeAdmin, deleteVideo);
 router.delete("/delete/:videoKey", deleteVideo);
+// router.get("/getAllProject",getProjects)
 // router.put("/:id", authenticate, editVideo);
 router.get("/download/:id", downloadVideo);
-router.get("/allVideos",fetchAllVideos)
+router.get("/allProjects",fetchAllVideos)//working
 router.get("/allImages",fetchAllImages)
 router.get("/allReels",fetchAllReel)
-router.get("/singleVideo/:id",getSingleVideo)
+router.get("/singleProject/:id",getSingleVideo)//working
 
 router.get("/singleImage/:id",getSingleImage)
 

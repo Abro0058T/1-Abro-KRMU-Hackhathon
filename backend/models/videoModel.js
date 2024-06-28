@@ -4,29 +4,26 @@ import User from "./userModel.js";
 const videoSchema = new mongoose.Schema(
   {
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,//admin id
       ref: User,
       required: true,
     },
-    url: { type: String, required: true },
+    url: { type: String },
     type: { type: String, enum: ["image", "reel", "video"], required: true },
-    streamUrl:{
-      type:String,
-
+    streamUrl: {
+      type: String,
     },
-    tags:{
-      type:[
-        {type:String}
-      ]
+    tags: {
+      type: [{ type: String }],
     },
-    videoKey:{
-      type:String
+    videoKey: {
+      type: String,
     },
-    title: { type: String  },
+    title: { type: String },
     description: { type: String },
     duration: {
       // Video/reel specific
-      type: String ,
+      type: String,
     },
     thumbnail: {
       type: String,
@@ -35,11 +32,26 @@ const videoSchema = new mongoose.Schema(
       type: Number,
       minimum: 0,
     },
-    status:{
-      type:String,
-      enum:["In Progress","Waiting to review","Approved"],
-      default:"In Progress"
-    }
+    clips: [
+      {
+        type: String,
+      },
+    ],
+    images: [
+      {
+        type: String,
+      },
+    ],
+    audio: [
+      {
+        type: String,
+      },
+    ],
+    status: {
+      type: String,
+      enum: ["In Progress", "Waiting to review", "Approved"],
+      default: "In Progress",
+    },
   },
   { timestamps: true }
 );
