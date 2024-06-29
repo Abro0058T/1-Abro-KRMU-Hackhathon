@@ -105,6 +105,33 @@ const uploadReelThunk = createAsyncThunk("/reels", async (data) => {
   }
 });
 
+
+const initializeProjectThunk = createAsyncThunk("/initializeProject", async (data) => {
+  try {
+    console.log(data)
+    // exit()
+    const response = await axios.post(`${BASE_URL}/initializeNewProject`, data);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error in uploading reel", error);
+    throw error;
+  }
+});
+
+
+const getAllProjectThunk = createAsyncThunk("/getallproject", async (adminId) => {
+  try {
+    console.log(adminId.adminId,"inside thunk");
+    const response = await axios.get(`${BASE_URL}/allProjects?userId=${adminId.adminId}`);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error in fetching video", error);
+    throw error;
+  }
+});
+
 export {
   getAllMediaThunk,
   getAllImageThunk,
@@ -115,4 +142,6 @@ export {
   uploadMediaThunk,
   uploadImageThunk,
   uploadReelThunk,
+  initializeProjectThunk,
+  getAllProjectThunk
 };

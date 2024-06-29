@@ -1,7 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { getAllUsersThunk, registerMemberUserThunk } from '../redux/thunks/userThunk'
 
 const ManageTeam = () => {
     const  [form, setform] = useState(0)
+    const dispatch=useDispatch()
+    const {userData}=useSelector(state=>state.user)
+    // const [membersData,setMembersData]=useState()
+    const {memberData}=useSelector(state=>state.user)
+    console.log(memberData,"emberdata")
     const [name,setName]=useState("")
     const [email,setEmail]=useState("")
     const [role,setRole]=useState("")
@@ -25,8 +32,17 @@ const ManageTeam = () => {
         setform(!form)
     }
     const submitForm=()=>{
+        dispatch(registerMemberUserThunk({email,username:name,password,adminId:userData._id,role}))
         console.log(name,email,password,role)
     }
+    useEffect(()=>{
+        const getMemberData=()=>{
+            console.log("here")
+            console.log(userData._id)
+            dispatch(getAllUsersThunk({adminId:userData._id}))
+        }
+        getMemberData()
+    },[])
   return (
     <div className='text-customGray-light' >
           {form && <div className='absolute top-[30%] right-[40%]  border-2 border-customPurple bg-customPurple-darker rounded-md'>
@@ -50,7 +66,7 @@ const ManageTeam = () => {
             <div className='border-2 rounded-md border-customPurple'> 
 
             {
-               members?.map(member=>(
+               memberData?.map(member=>(
                     <div className="flex flex-row justify-evenly ">
                         <p>{member.username}</p>
                         <p className=' text-center'>{member.email}</p>

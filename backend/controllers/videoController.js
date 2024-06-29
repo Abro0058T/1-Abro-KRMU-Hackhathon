@@ -35,7 +35,7 @@ const createNewProject=async(req,res)=>{
     }
     const uploadMedia= await  Video.create(videoDetails);
     console.log(uploadMedia);
-    res.send("Successfully created new project");
+    res.status(200).json(uploadMedia);
   }catch(error){
     console.log(error)
     throw new Error("Fail to create new project")
@@ -262,7 +262,7 @@ const downloadVideo = async (req, res) => {
 const  fetchAllVideos=async(req,res)=>{
   try{
    
-const allvideos= await Video.find({userId:req.body.userId}).sort({createdAt:1})
+const allvideos= await Video.find({userId:req.query.userId}).sort({createdAt:1})
 console.log(allvideos)
 res.send(allvideos)
   }catch(error){

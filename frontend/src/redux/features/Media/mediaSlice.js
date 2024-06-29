@@ -9,6 +9,9 @@ import {
   uploadMediaThunk,
   uploadImageThunk,
   uploadReelThunk,
+  initializeProjectThunk,
+  // getAllProject,
+  getAllProjectThunk,
 } from "../../thunks/mediaThunk";
 // import { logoutUserThunk } from "../../thunks/logoutThunk";
 
@@ -16,6 +19,9 @@ const initialState = {
   mediaInfo: {},
   isLoading: false,
   error: null,
+  projectinitialize:false,
+  projectIntializeDetails:[],
+  allProjectDetails:[]
 };
 
 const mediaSlice = createSlice({
@@ -142,8 +148,35 @@ const mediaSlice = createSlice({
       .addCase(uploadReelThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
-      });
+      })
+      .addCase(initializeProjectThunk.pending,(state,action)=>{
+        state.isLoading=true;
+        state.projectinitialize=false;
+        // state.projectIntializeDetails=action.payload
+      })
+      .addCase(initializeProjectThunk.fulfilled,(state,action)=>{
+        state.isLoading=false;
+        state.projectinitialize=true;
+        state.projectIntializeDetails=action.payload
+      })
+      .addCase(initializeProjectThunk.rejected,(state,action)=>{
+        state.isLoading=false;
+        state.projectinitialize=false;
+        state.error="Error initializing project"
+      })
+      .addCase(getAllProjectThunk.pending,(state,action)=>{
+        state.isLoading=true;
+      })
+      .addCase(getAllProjectThunk.fulfilled,(state,action)=>{
+        state.isLoading=false;
+        state.allProjectDetails=action.payload
+      })
+      .addCase(getAllProjectThunk.rejected,(state,action)=>{
+        state.isLoading=false;
+        state.error="error getting all projects"
+      })
   },
+
 });
 
 export const { resetAppError } = mediaSlice.actions;

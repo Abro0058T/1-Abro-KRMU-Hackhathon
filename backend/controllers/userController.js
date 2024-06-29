@@ -57,7 +57,7 @@ console.log(req.body)
     throw new Error("Incorrect password")
     } else {
       // incorrect password
-      res.status(200).json({ message: "login user" });
+      res.status(200).json({ message: "login user" ,userData:existingUser[0]});
     }
 
 });
@@ -88,9 +88,11 @@ const addMembers=asyncHandler(async(req,res)=>{
 })
 
 const getAllMembers =asyncHandler(async(req,res)=>{
-  try{const {adminId}=req.body
+  try{const {adminId}=req.query
+  console.log(req.query.adminId,"params")
   const members=await TeamMember.find({adminId})
-  res.status(200).json(members)
+  console.log(members)
+  res.status(200).json({data:members})
   }catch(error){
     console.log(error);
   throw new Error("Error fetching member of team")

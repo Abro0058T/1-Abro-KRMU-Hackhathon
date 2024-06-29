@@ -1,29 +1,41 @@
+
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import { useDispatch, useSelector } from 'react-redux';
+import { initializeProjectThunk } from '../redux/thunks/mediaThunk';
 function IntialiseProject() {
-//   const dispatch=useAppDispatch();
+  const dispatch=useDispatch();
+  const {userData}=useSelector(state=>state.user)
+  const projectData=useSelector(state=>state.media)
+  console.log(projectData,"projectData")
   const {register,handleSubmit,errors}=useForm();
   const onSubmit=async (data)=>{
+    console.log(data)
+    let tagsArray
     if(data.tag!=""){
-      const tagsArray=data.tag.split(" ");
+       tagsArray=data.tags.split(",");
+  
     }
-    for(let i=0;tagsArray.length;i++){
-      formData.append("tags[]",tagsArray[i])
-    }
-    
-    formData.append("title",data.name);
-    formData.append("description",data.description)
-    formData.append("status",data.status)
-    formData.append("type",data.type)
-    formData.append("image",data.image)
+    console.log(tagsArray)
+    dispatch(initializeProjectThunk({
+  userId:userData._id,
+  title:data.title,
+  description:data.description,
+  tags:tagsArray,
+    }))
+    // formData.append("title",data.name);
+    // formData.append("description",data.description)
+    // formData.append("status",data.status)
+    // formData.append("type",data.type)
+    // // formData.append("image",data.image)
 
-    console.log(...formData)
-    await dispatch(uploadImage(formData))
+    // console.log(...formData)
+    // // await dispatch(uploadImage(formData))
   }
 
   return (
 
-    <form >
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div>
         <label htmlFor="title">Title:</label>
         <input

@@ -3,7 +3,9 @@ import {
   registerUserThunk,
   loginUserThunk,
   getAllUsersThunk,
+  registerMemberUserThunk,
 } from "../../thunks/userThunk";
+import { initializeProjectThunk } from "../../thunks/mediaThunk";
 // import { logoutUserThunk } from "../../thunks/logoutThunk";
 
 const initialState = {
@@ -13,6 +15,10 @@ const initialState = {
   isAuth: false,
   isLoading: false,
   error: null,
+  userData:[],
+  addMember:false,
+  memberData:[],
+
 };
 
 const authSlice = createSlice({
@@ -56,9 +62,10 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.error.message;
       })
-      .addCase(loginUserThunk.fulfilled, (state) => {
+      .addCase(loginUserThunk.fulfilled, (state,action) => {
         state.isAuth = true;
         state.isLoading = false;
+        state.userData=action.payload.userData
       })
       .addCase(loginUserThunk.pending, (state) => {
         state.isLoading = true;
@@ -68,20 +75,37 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.error.message;
       })
-      .addCase(getAllUsersThunk.pending, (state) => {
+      .addCase(getAllUsersThunk.pending, (state,action) => {
         state.isLoading = true;
         state.isAuth = true;
-        state.data = null;
+        console.log(action.payload,"data in slice")
+        state.memberData = action.payload;
       })
       .addCase(getAllUsersThunk.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload;
+        console.log(action.payload,"data in slice")
+        state.memberData = action.payload.data;
       })
       .addCase(getAllUsersThunk.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
-      });
+      })
+      .addCase(registerMemberUserThunk.pending,(state,action)=>{
+        state.isLoading = true;
+        state.addMember=false;
+      })
+      .addCase(registerMemberUserThunk.fulfilled,(state,action)=>{
+        state.isLoading = false;
+        state.addMember=true;
+      })
+      .addCase(registerMemberUserThunk.rejected,(state,action)=>{
+        state.isLoading=false;
+        state.error="Error adding member"
+        state.addMember=false
+      })
+    
   },
+
 });
 
 export const { resetAppError } = authSlice.actions;

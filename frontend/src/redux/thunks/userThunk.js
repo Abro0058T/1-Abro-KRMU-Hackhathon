@@ -24,9 +24,11 @@ const loginUserThunk = createAsyncThunk("/login", async (data) => {
   }
 });
 
-const getAllUsersThunk = createAsyncThunk("/", async () => {
+const getAllUsersThunk = createAsyncThunk("/", async (adminId) => {
   try {
-    const response = await axios.get(`${BASE_URL}`);
+    console.log("here")
+    const response = await axios.get(`${BASE_URL}/allMembers?adminId=${adminId.adminId}`);
+    console.log(response.data,"data")
     return response.data;
   } catch (error) {
     console.error("Error getting user by ID:", error);
@@ -34,4 +36,17 @@ const getAllUsersThunk = createAsyncThunk("/", async () => {
   }
 });
 
-export { registerUserThunk, loginUserThunk, getAllUsersThunk };
+
+const registerMemberUserThunk = createAsyncThunk("/registerMember", async (data) => {
+  try {
+    console.log(data);
+    const response = await axios.post(`${BASE_URL}/addMembers`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error registering user:", error);
+    throw error;
+  }
+});
+
+
+export { registerUserThunk, loginUserThunk, getAllUsersThunk ,registerMemberUserThunk};

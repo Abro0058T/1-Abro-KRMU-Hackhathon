@@ -1,7 +1,20 @@
 import { Mic, Search } from "lucide-react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { getAllProjectThunk } from "../redux/thunks/mediaThunk";
 
 function Video() {
+  const mediaData=useSelector(state=>state.media)
+  const {userData}=useSelector(state=>state.user)
+  console.log(mediaData)
+  const dispatch=useDispatch()
+  useEffect(()=>{
+    const getAllProject=()=>{
+      dispatch(getAllProjectThunk({adminId:userData._id}))
+    }
+    getAllProject()
+  },[])
   return (
     <div className="mt-5 ml-6 w-10/12 rounded-lg ">
      <div className="flex mb-2 justify-between" >
