@@ -8,6 +8,9 @@ import Dashboard from "./component/Dashboard";
 import HomeDashboard from "./component/HomeDashboard";
 import UploadFile from "./component/UploadFile";
 import Video from "./component/Video";
+import ManageTeam from "./component/ManageTeam";
+import IntialiseProject from "./component/IntialiseProject";
+import SingleProject from "./component/SingleProject";
 
 export default function App() {
   return (
@@ -21,7 +24,11 @@ export default function App() {
           {/* <Route index element={<Home />} /> */}
           <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />}>
-          
+        <Route path="manageteams" element={<ManageTeam />}/>
+        <Route path="intialiseproject" element={<IntialiseProject />}/>
+        
+        <Route path="project/:id" element={<SingleProject />}/>
+        {/* <Router></Roeuter> */}
           <Route path="videoDashboard" element={<HomeDashboard/>} />
           <Route path="upload" element={<UploadFile/>}/>
           <Route path="videos" element={<Video/>}/>
