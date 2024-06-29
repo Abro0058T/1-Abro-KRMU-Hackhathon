@@ -20,9 +20,10 @@ function Dashboard() {
 
   const mainMenuItems = [
     { name: 'DashBoard', icon: <LayoutGrid />, link: 'videoDashboard' },
-    { name: 'Inbox', icon: <Inbox />, link: '#' },
+    { name: 'AddMember', icon: <Inbox />, link: "manageteams"},
     { name: 'Upload', icon: <Upload />, link: 'upload' },
-    { name: 'Videos', icon: <Video />, link: 'videos' },
+    { name: 'Manage Project', icon: <Video />, link: 'videos' },
+    { name: 'Intialise Project', icon: <Video />, link: 'intialiseproject' },
     { name: 'Reels', icon: <Film />, link: '#' },
     { name: 'Posts', icon: <Images />, link: '#' },
     { name: 'Blogs', icon: <SquarePen />, link: '#' },

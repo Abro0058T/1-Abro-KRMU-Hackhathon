@@ -1,4 +1,5 @@
 import { Mic, Search } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function Video() {
   return (
@@ -41,6 +42,7 @@ function Video() {
                   <th>Duration</th>
                   <th>Data</th>
                   <th>Status</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody className="">
@@ -50,6 +52,12 @@ function Video() {
                   <td>Cy Ganderton</td>
                   <td>Quality Control Specialist</td>
                   <td>Blue</td>
+                  <td>In progress</td>
+                  <td>
+                  <Link to="/dashboard/project/test12342">
+                    Edit
+                    </Link>
+                  </td>
                 </tr>
                 {/* row 2 */}
                 <tr>
