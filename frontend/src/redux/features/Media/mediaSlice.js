@@ -12,6 +12,7 @@ import {
   initializeProjectThunk,
   // getAllProject,
   getAllProjectThunk,
+  uploadVideoAssestsThunk,
 } from "../../thunks/mediaThunk";
 // import { logoutUserThunk } from "../../thunks/logoutThunk";
 
@@ -21,7 +22,9 @@ const initialState = {
   error: null,
   projectinitialize:false,
   projectIntializeDetails:[],
-  allProjectDetails:[]
+  allProjectDetails:[],
+  imageAssests:[],
+  videoAssests:[]
 };
 
 const mediaSlice = createSlice({
@@ -174,6 +177,19 @@ const mediaSlice = createSlice({
       .addCase(getAllProjectThunk.rejected,(state,action)=>{
         state.isLoading=false;
         state.error="error getting all projects"
+      })
+      .addCase(uploadVideoAssestsThunk.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(uploadVideoAssestsThunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.mediaInfo = action.payload;
+        console.log(action.payload)
+        stat.videoAssests=action.payload
+      })
+      .addCase(uploadVideoAssestsThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
       })
   },
 

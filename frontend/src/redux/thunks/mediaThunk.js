@@ -85,7 +85,11 @@ const uploadMediaThunk = createAsyncThunk("/", async (data) => {
 const uploadImageThunk = createAsyncThunk("/dashboard/upload", async (data) => {
   try {
     console.log(data)
-    const response = await axios.post(`${BASE_URL}/image`, data);
+    const response = await axios.post(`${BASE_URL}/AddImageAssests`, data,                                       {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -132,6 +136,34 @@ const getAllProjectThunk = createAsyncThunk("/getallproject", async (adminId) =>
   }
 });
 
+// const getAllProjectThunk = createAsyncThunk("/uploadImage", async (formData) => {
+//   try {
+//     console.log(adminId.adminId,"inside thunk");
+//     const response = await axios.get(`${BASE_URL}/allProjects?userId=${adminId.adminId}`);
+//     console.log(response.data);
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error in fetching video", error);
+//     throw error;
+//   }
+// });
+const uploadVideoAssestsThunk = createAsyncThunk("/dashboard/uploadVideoAssests", async (data) => {
+  try {
+    console.log(data)
+    const response = await axios.post(`${BASE_URL}/AddVideoAssests`, data,                                       {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error in uploading image", error);
+    throw error;
+  }
+});
+
+
 export {
   getAllMediaThunk,
   getAllImageThunk,
@@ -143,5 +175,6 @@ export {
   uploadImageThunk,
   uploadReelThunk,
   initializeProjectThunk,
-  getAllProjectThunk
+  getAllProjectThunk,
+  uploadVideoAssestsThunk
 };

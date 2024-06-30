@@ -1,8 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import UploadMedia from './UploadMedia.jsx';
+import UploadMediaVideo from './UploadMediaVideo,.jsx';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 function SingleProject() {
 //   const dispatch=useAppDispatch();
+const {id}=useParams()
+const {allProjectDetails}=useSelector(state=>state.media)
+const[singleProject,setSingleProject]=useState([])
+console.log(id,allProjectDetails)
   const {register,handleSubmit,errors}=useForm();
+  const [addImage,setAddImage]=useState(0)
+  const [addVideo,setAddvideo]=useState(0)
+  const proejectId=id
+  // let videoClips=[]
+  // let imageCLips=[]
   const onSubmit=async (data)=>{
     if(data.tag!=""){
       const tagsArray=data.tag.split(" ");
@@ -20,9 +34,22 @@ function SingleProject() {
     console.log(...formData)
     // await dispatch(uploadImage(formData))
   }
+  useEffect(()=>{
+    const getProject=()=>{
+      const project=allProjectDetails.filter(project=>project._id===id)
+      console.log(project)
+      setSingleProject(project)
+      
+    }
+    getProject()
+  },[])
 
   return (
 
+    <>
+  {
+    singleProject.length>0?
+    
     <div>
     
 
@@ -35,13 +62,13 @@ function SingleProject() {
                    <button className='absolute right-2 bg-purple-800 p-2 border-none rounded-lg'> Update</button>
                 </div>
            <div className='mt-4'>
-            <label htmlFor="Tags " className='text-white text-xl '>Tags</label> 
+            <label htmlFor="Title " className='text-white text-xl '>Title</label> 
             <br />
-            <textarea type="text-area"  className='border-none rounded-md pl-1 bg-purple-800 w-full mt-4 ' placeholder='Video Title'/>
+            <textarea type="text-area"  className='border-none rounded-md pl-1 bg-purple-800 w-full mt-4 ' placeholder='Video Title' value={singleProject[0].title}/>
             <br />
             <label htmlFor=""  className='text-white text-xl'>Description</label>
             <br />
-            <textarea  type="text" className='border-none rounded-md pl-1 bg-purple-800 w-full h-60 mt-4' placeholder='Description'/>
+            <textarea  type="text" className='border-none rounded-md pl-1 bg-purple-800 w-full h-60 mt-4' placeholder='Description' value={singleProject[0].description}/>
             <br />
            </div>
             <label htmlFor=""  className='text-white text-xl'>Thumbnail
@@ -53,7 +80,7 @@ function SingleProject() {
             <div className="border  w-1/4"></div>
             </div>
             </div>
-            <div className='right  h-4/6 w-4/12'>
+            {/* <div className='right  h-4/6 w-4/12'>
                 <div className=' h-1/2'>
                     Video </div>
                 <div className=' bg-purple-800 h-1/2 text-white p-2 -mb-2'>
@@ -64,21 +91,51 @@ function SingleProject() {
                     <p className='pt-4'>Status</p>
                     <p>Currently Working</p>
                      </div>
-            </div>
-            <button className='absolute bottom-0 right-0 p-2 mb-6 border-none rounded-lg bg-purple-800 text-white text-xl ' >Upload</button>
+            </div> */}
+            {/* <button className='absolute bottom-0 right-0 p-2 mb-6 border-none rounded-lg bg-purple-800 text-white text-xl ' >Upload</button> */}
          </div>
     </div>
     <div className='addImageAssests'>
         <div>
 
         </div>
-        <button>Add Image</button>
+      
+        <button onClick={()=>{setAddImage(!addImage)}}>Add Image</button>
+        <div className='flex gap-2 w-[80] overflow-scroll'>
+          {singleProject[0].images.map((image,index)=>(
+
+            <img key={index} src={image} alt="" width={200} />
+          ))}
+        </div>
+        {/* <div className='absolute top-40 right-40'></div> */}
+        {
+          addImage? 
+         <UploadMedia type="image" proejectId={proejectId}/> : <h1></h1>
+        }
     </div>
     <div className='addVideoAssests'>
         <div></div>
-        <button>Add Video</button>
-    </div>
-    </div>
+      
+        <button onClick={()=>{setAddvideo(!addVideo)}}>Add VideoClip</button>
+        <div className='flex gap-2 w-[80] overflow-scroll'>
+          {singleProject[0].clips.map((image,index)=>(
+
+            // <img key={index} src={image} alt="" width={200} />
+            <video key={index} src={image} width={200}></video>
+          ))}
+        </div>
+        {
+          addVideo? 
+          <UploadMediaVideo type="video" projectId={proejectId}/> : <h1></h1>
+        }
+        {/* </div> */}
+        </div>
+        {/* <button>Add Video</button> */}
+    {/* </div> */}
+    </div>:
+    <h1>Loading Project</h1>
+      }
+    </>
   )
 }
 

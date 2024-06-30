@@ -70,7 +70,7 @@ console.log(videoName)
     
     url:`https://cloudcontentsource.s3.ap-south-1.amazonaws.com/${videoName}`,
   type:"video",
-  streamUrl:`https://cloudcontenttranscoded.s3.ap-south-1.amazonaws.com/output/${videoName}`,
+  streamUrl:`https://d72lnakq71utd.cloudfront.net/${videoName}`,
   tags,
   videoKey:videoName,
 title,

@@ -42,13 +42,16 @@ function IntialiseProject() {
           type="text"
           id="title"
           {...register('title')}
-          
+        
+          className='text-white'
         />
         {/* {errors.title && <p className="error">{errors.title.message}</p>} */}
       </div>
       <div>
         <label htmlFor="description">Description:</label>
-        <textarea  id="description" {...register('description')} />
+        <textarea  id="description" {...register('description')} 
+        
+        className='text-white'/>
       </div>
       <div>
         <label htmlFor="tags">Tags (comma-separated):</label>
@@ -56,6 +59,7 @@ function IntialiseProject() {
           type="text"
           id="tags"
           {...register('tags')}
+          className='text-white'
         />
         {/* {errors.tags && <p className="error">{errors.tags.message}</p>} */}
       </div>

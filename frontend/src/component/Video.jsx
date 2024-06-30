@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 import { getAllProjectThunk } from "../redux/thunks/mediaThunk";
 
 function Video() {
-  const mediaData=useSelector(state=>state.media)
+  const {allProjectDetails}=useSelector(state=>state.media)
   const {userData}=useSelector(state=>state.user)
-  console.log(mediaData)
+  console.log(allProjectDetails)
   const dispatch=useDispatch()
   useEffect(()=>{
     const getAllProject=()=>{
@@ -52,7 +52,7 @@ function Video() {
                 <tr className="text-customGray-light" >
                   <th>Video</th>
                   <th>Name</th>
-                  <th>Duration</th>
+                  <th>Descriptoi</th>
                   <th>Data</th>
                   <th>Status</th>
                   <th>Action</th>
@@ -60,94 +60,25 @@ function Video() {
               </thead>
               <tbody className="">
                 {/* row 1 */}
-                <tr>
-                  <th>1</th>
-                  <td>Cy Ganderton</td>
-                  <td>Quality Control Specialist</td>
-                  <td>Blue</td>
-                  <td>In progress</td>
-                  <td>
-                  <Link to="/dashboard/project/test12342">
-                    Edit
-                    </Link>
-                  </td>
-                </tr>
-                {/* row 2 */}
-                <tr>
-                  <th>2</th>
-                  <td>Hart Hagerty</td>
-                  <td>Desktop Support Technician</td>
-                  <td>Purple</td>
-                </tr>
-                {/* row 3 */}
-                <tr>
-                  <th>3</th>
-                  <td>Brice Swyre</td>
-                  <td>Tax Accountant</td>
-                  <td>Red</td>
-                </tr>
-                {/* row 1 */}
-                <tr>
-                  <th>1</th>
-                  <td>Cy Ganderton</td>
-                  <td>Quality Control Specialist</td>
-                  <td>Blue</td>
-                </tr>
-                {/* row 2 */}
-                <tr>
-                  <th>2</th>
-                  <td>Hart Hagerty</td>
-                  <td>Desktop Support Technician</td>
-                  <td>Purple</td>
-                </tr>
-                {/* row 3 */}
-                <tr>
-                  <th>3</th>
-                  <td>Brice Swyre</td>
-                  <td>Tax Accountant</td>
-                  <td>Red</td>
-                </tr>
-                <tr>
-                  <th>1</th>
-                  <td>Cy Ganderton</td>
-                  <td>Quality Control Specialist</td>
-                  <td>Blue</td>
-                </tr>
-                {/* row 2 */}
-                <tr>
-                  <th>2</th>
-                  <td>Hart Hagerty</td>
-                  <td>Desktop Support Technician</td>
-                  <td>Purple</td>
-                </tr>
-                {/* row 3 */}
-                <tr>
-                  <th>3</th>
-                  <td>Brice Swyre</td>
-                  <td>Tax Accountant</td>
-                  <td>Red</td>
-                </tr>
-                {/* row 1 */}
-                <tr>
-                  <th>1</th>
-                  <td>Cy Ganderton</td>
-                  <td>Quality Control Specialist</td>
-                  <td>Blue</td>
-                </tr>
-                {/* row 2 */}
-                <tr>
-                  <th>2</th>
-                  <td>Hart Hagerty</td>
-                  <td>Desktop Support Technician</td>
-                  <td>Purple</td>
-                </tr>
-                {/* row 3 */}
-                <tr>
-                  <th>3</th>
-                  <td>Brice Swyre</td>
-                  <td>Tax Accountant</td>
-                  <td>Red</td>
-                </tr>
+                {
+                  allProjectDetails.map((project,index)=>{
+                    return(
+                      <tr key={index}>
+                        <th>{index+1}</th>
+                        <td>{project.title}</td>
+                        <td>{project.description}</td>
+                        <td>{project.createdAt}</td>
+                        <td>{project.status}</td>
+                        <td>
+                        <Link to={`/dashboard/project/${project._id}`}>
+                          Edit
+                          </Link>
+                        </td>
+                      </tr>
+                    )
+                  
+                  })
+                }
               </tbody>
             </table>
           </div>
